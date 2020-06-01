@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <EditText
+        android:id="@+id/edit_user_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="User ID" />
+
+    <Button
+        android:id="@+id/btn_init_server_api"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Init Server API"
+        android:textSize="24sp"
+        android:gravity="center"
+        />
+
+    <Button
+        android:id="@+id/btn_init_sdk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Init SDK"
+        android:textSize="24sp"
+        android:gravity="center"
+        />
+
+    <Button
+        android:id="@+id/btn_check_person"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Check person"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/btn_register_device"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Register Device"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/btn_enroll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Enroll"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/btn_verify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Verify"
+        android:textSize="24sp" />
+
+
+</LinearLayout>
