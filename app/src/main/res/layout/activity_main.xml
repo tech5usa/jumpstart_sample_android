@@ -86,7 +86,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:hint="Email Address"
+            android:hint="Email / UserID"
             android:layout_height="wrap_content">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_text_email"
@@ -99,7 +99,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Check and Set Email" />
+            android:text="Check and Set Email / UserID" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button_register_device_to_user"
