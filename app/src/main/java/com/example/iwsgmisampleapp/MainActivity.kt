@@ -38,7 +38,6 @@ const val EMAIL_ADDRESS_USER_ID = "cpaiano+alltest@iwsinc.com"
 class MainActivity : AppCompatActivity() {
 
     private var personInGMI: IMSPerson? = null
-    private var currentCoroutineJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         //BUTTON: INITIALIZE GMI SDK
         button_init_gmi_sdk.setOnClickListener {
             Log.d("INIT_SDK", "button_init_gmi_sdk clicked, Initializing SDK with provided parameters in background coroutine...")
-            currentCoroutineJob = lifecycleScope.launch(Dispatchers.IO) {
+            lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     IMS.startIMS(
                         this@MainActivity,
@@ -98,7 +97,7 @@ class MainActivity : AppCompatActivity() {
         //BUTTON: CHECK AND SET EMAIL
         button_check_and_set_email.setOnClickListener {
             Log.d("CHECK_EMAIL", "button_check_and_set_email clicked, checking provided email / user ID in background coroutine...")
-            currentCoroutineJob = lifecycleScope.launch(Dispatchers.IO) {
+            lifecycleScope.launch(Dispatchers.IO) {
                 try {
 
                     personInGMI = IMS.getPersonWithUserId(
@@ -135,7 +134,7 @@ class MainActivity : AppCompatActivity() {
         //BUTTON: REGISTER DEVICE TO USER
         button_register_device_to_user.setOnClickListener {
             Log.d("REGISTER", "button_register_device_to_user clicked, registering this device to provided email / user ID in background coroutine...")
-            currentCoroutineJob = lifecycleScope.launch(Dispatchers.IO) {
+            lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     val registrationResult = IMS.registerDeviceWithUserId(personInGMI!!.userId)
                     showGmiDialog(
@@ -162,7 +161,7 @@ class MainActivity : AppCompatActivity() {
         //BUTTON: GET PERSON TENANT DATA
         button_get_person_tenant_data.setOnClickListener {
             Log.d("TENANT_DATA", "button_get_person_tenant_data clicked, retrieving Person Tenant Data in background coroutine...")
-            currentCoroutineJob = lifecycleScope.launch(Dispatchers.IO) {
+            lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     personInGMI = IMS.getPersonTenantData(personInGMI!!.id, IMS.getServer())
                     showGmiDialog(
@@ -190,7 +189,7 @@ class MainActivity : AppCompatActivity() {
         //BUTTON: COUNT PENDING ENROLLMENTS
         button_count_pending_enrolls.setOnClickListener {
             Log.d("COUNT_ENROLL", "button_count_pending_enrolls clicked, counting pending enrolls for current user in background coroutine...")
-            currentCoroutineJob = lifecycleScope.launch(Dispatchers.IO) {
+            lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     var pendingEnrollments = IMS.getPendingEnrollmentInfos(personInGMI)
                     if (pendingEnrollments == null || pendingEnrollments.isEmpty()) {
@@ -224,7 +223,7 @@ class MainActivity : AppCompatActivity() {
         //BUTTON: PERFORM PENDING ENROLLMENTS
         button_perform_pending_enrolls.setOnClickListener {
             Log.d("ENROLL", "button_perform_pending_enrolls clicked, performing pending enrolls for current user...")
-            currentCoroutineJob = lifecycleScope.launch(Dispatchers.IO) {
+            lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     var pendingEnrollments = IMS.getPendingEnrollments(personInGMI)
                     if (pendingEnrollments == null || pendingEnrollments.isEmpty()) {
@@ -268,7 +267,7 @@ class MainActivity : AppCompatActivity() {
         //BUTTON: COUNT PENDING ALERTS
         button_count_pending_alerts.setOnClickListener {
             Log.d("COUNT_ALERTS", "button_count_pending_alerts clicked, counting pending alerts for current user in background coroutine...")
-            currentCoroutineJob = lifecycleScope.launch(Dispatchers.IO) {
+            lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     var pendingAlerts = IMS.getMessagesForPerson(personInGMI)
                     if (pendingAlerts == null || pendingAlerts.isEmpty()) {
