@@ -1,6 +1,7 @@
 package com.example.iwsgmisampleapp
 
 import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
@@ -10,10 +11,12 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.GsonBuilder
 import com.iwsinc.ims.api.IMS
+import com.iwsinc.ims.api.IMSMessage
+import com.iwsinc.ims.api.IMSMessageInfo
 import com.iwsinc.ims.api.IMSPerson
+import com.iwsinc.ims.response.IMSResponse
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.lang.StringBuilder
 
@@ -138,7 +141,7 @@ class MainActivity : AppCompatActivity() {
                 try {
                     val registrationResult = IMS.registerDeviceWithUserId(personInGMI!!.userId)
                     showGmiDialog(
-                        "Registration request submitted!  Registration result is $registrationResult.  Check your email for a 2FA link to validate your registration.  Once you have clicked this link, you may continue.",
+                        "Registration request submitted!  If you have email 2FA enabled for this tenant then check your email and click the link now - otherwise, run your tenant admin device approval script now.  Once completed, you may continue in the app.",
                         "REGISTER"
                     )
                 } catch (e: Exception) {
@@ -232,18 +235,18 @@ class MainActivity : AppCompatActivity() {
                             "ENROLL"
                         )
                     } else {
-                        var enrollResultStringBuilder = StringBuilder()
+                        var resultStringBuilder = StringBuilder()
                         for (enrollment in pendingEnrollments) {
                             val response: IMS.EnrollResponse? = IMS.nativeEnroll(
                                 this@MainActivity,
                                 enrollment
                             )
-                            enrollResultStringBuilder.append("${enrollment.enrollInfo.captureType} success: ${response?.success()}\n")
+                            resultStringBuilder.append("${enrollment.enrollInfo.captureType} success: ${response?.success()}\n")
                             Log.i("ENROLL", "enrollment result for ${enrollment.enrollInfo.captureType}: success: ${response?.success()} - ${response?.objectToString()}")
                         }
 
                         showGmiDialog(
-                            "Processed ${pendingEnrollments.size} enrollments.\n$enrollResultStringBuilder\nFor more details, see the Android logcat output.",
+                            "Processed ${pendingEnrollments.size} enrollments.\n$resultStringBuilder\nFor more details, see the Android logcat output.",
                             "ENROLL"
                         )
                     }
@@ -292,6 +295,42 @@ class MainActivity : AppCompatActivity() {
 
 
 
+        //----------------------------
+        //BUTTON: PERFORM PENDING ALERTS
+        button_perform_pending_alerts.setOnClickListener {
+            Log.d("ALERTS", "button_perform_pending_alerts clicked, performing pending alerts for current user...")
+            lifecycleScope.launch(Dispatchers.IO) {
+                try {
+                    var pendingAlerts = IMS.getMessagesForPerson(personInGMI)
+                    if (pendingAlerts == null || pendingAlerts.isEmpty()) {
+                        showGmiDialog("No pending alerts for the current user!", "ALERTS")
+                    } else {
+                        var resultStringBuilder = StringBuilder()
+                        for (alert in pendingAlerts) {
+                            val response = launchAndWaitForNativeMessage(
+                                this@MainActivity,
+                                alert
+                            )
+
+                            resultStringBuilder.append("${alert.enrollInfo.captureType} success: ${response?.successfulVerificationEvent}\n")
+                            Log.i("ALERTS", "enrollment result for ${alert.enrollInfo.captureType}: success: ${response?.successfulVerificationEvent} - ${response?.objectToString()}")
+                        }
+
+                        showGmiDialog(
+                            "Processed ${pendingAlerts.size} enrollments.\n$resultStringBuilder\nFor more details, see the Android logcat output.",
+                            "ALERTS"
+                        )
+                    }
+                } catch (e: Exception) {
+                    showGmiDialog(
+                        "Must perform a previous step first!  Perform pending enrollments for current user failed, exception was ${e.localizedMessage}",
+                        "ALERTS",
+                        e
+                    )
+                }
+            }
+        }
+
     }
 
 
@@ -300,6 +339,25 @@ class MainActivity : AppCompatActivity() {
 
     //------------------------------------------------------------------------------------
     //Utility functions to keep the above code clean and readable
+
+    private suspend fun launchAndWaitForNativeMessage(context: Context, imsMessageInfo: IMSMessageInfo): IMSResponse? {
+        Log.i("LAUNCH", ".launchAndWaitForNativeMessage() launching IMS.renderMessage...")
+
+        val imsMessage = imsMessageInfo.pullMessage(personInGMI!!)
+
+        val listener = BlockingNativeMessageResponseListener()
+
+        listener.requestAndWaitForPermit()
+        IMS.renderMessage(imsMessage, context, listener)
+
+        //Wait here until response, then release resulting sermaphore permit
+        listener.requestAndWaitForPermit()
+        Log.i("LAUNCH",".launchAndWaitForNativeMessage() execution returned from IMS.renderMessage with response: ${listener.lastResponse}")
+
+        listener.releasePermit()
+        Log.i("LAUNCH",".launchAndWaitForNativeMessage() execution returned from IMS.renderMessage, released permit.")
+        return listener.lastResponse
+    }
 
     private fun showGmiDialog(
         message: String?,
@@ -329,6 +387,12 @@ class MainActivity : AppCompatActivity() {
             dialog?.show()
         }
     }
+
+    //------------------------------------------------------------------------
+    //Kotin extensions functions
+
+    fun IMSMessageInfo.pullMessage(imsPerson: IMSPerson): IMSMessage? =
+        IMS.pullMessage(this, imsPerson)
 
     private fun TextInputEditText.extractText() = text.toString()
 
