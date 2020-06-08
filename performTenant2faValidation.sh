@@ -14,6 +14,8 @@ curl --location --request POST "${GMI_USERMANAGER_URL}/oauth/token?scope=IGNORED
 --header "Authorization: Basic ${GMI_TENANT_OAUTH_CREDENTIALS_BASE64_ENCODED}" \
 --header 'Content-Type: application/x-www-form-urlencoded'
 
+echo
+echo
 echo 'If the bearer token request was successful, it should be shown above this line in the response text.  For the next step, please copy and paste that token into the following prompt, then press Enter'
 echo
 TOKEN=""
