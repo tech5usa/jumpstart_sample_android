@@ -42,4 +42,4 @@ curl --location --request POST "${GMI_SERVER_URL}/tenant/${GMI_TENANT_CODE}/pers
 
 echo
 echo
-echo '2FA complete if you do not see any errors above!'
+echo '2FA complete if you do not see any errors above!  A 404 indicates that no matching pending registration was found.'
