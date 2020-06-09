@@ -18,19 +18,21 @@ B)  Entered some information incorrectly
 
 
 #WALKTHROUGH OF SAMPLE CODE USAGE:
-1)  In `MainActivity.kt` - Ensure the `PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION` values have all been replaced by actual configuration values. 
+1)  In `MainActivity.kt` - Ensure the `PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION` values have all been replaced by actual configuration values.  (Lines 26-32)
 
 2)  Compile and run the `app` module on an Android device, have the `logcat` log output up.
 
 3)  The configuration values you entered should be displayed at the top of the screen on your Android device.  If needed, you may edit them here.  Your changes will not persist.
 
-4)  Tap the `INITIALIZE GMI SDK` button, wait for the dialog to confirm success. 
+4)  Tap the `INITIALIZE GMI SDK` button, wait for the dialog to confirm success.   This button event is handled in `MainActivity.kt` line 59.
 
 5)  The User ID or email address you entered should be displayed in the `Email / UserID` field.  If needed, you may edit it here.  Your changes will not persist.
 
-6)  Tap the `CHECK AND SET EMAIL / USERID` button to check with the server if this user is valid, and if so set the SDK's current user for future operations.  Wait for the dialog to confirm success.
+6)  Tap the `CHECK AND SET EMAIL / USERID` button to check with the server if this user is valid, and if so set the SDK's current user for future operations.  Wait for the dialog to confirm success.   
+This button event is handled in `MainActivity.kt` line 96.
 
 7)  Tap the `REGISTER DEVICE TO USER` button to associate the current device with the current user ID on the GMI server.  Wait for the dialog to confirm success and read it carefully.  
+This button event is handled in `MainActivity.kt` line 135.
 
 8)  Perform your 2nd factor authentication, which may be either Email or Tenant.  If Email, click the link in the email you received.  
 If Tenant, you can copy the `Device ID` value from your Android `logcat` log output - search for the `REGISTER` tag to find it.  
@@ -39,16 +41,19 @@ Ensure the script you are about to use also has the appropriate GMI configuratio
 Run the script and follow the directions to perform your 2nd factor authentication.
 
 9)  Tap the `GET PERSON TENANT DATA` button to retrieve the user's tenant information.  Wait for the dialog to confirm success.
+This button event is handled in `MainActivity.kt` line 165.
 
 10) Tap the `COUNT PENDING ENROLLMENTS` button to count pending enrollments.  Wait for the dialog to confirm success and display count.
+This button event is handled in `MainActivity.kt` line 195.
 
 11) Tap the `PERFORM PENDING ENROLLMENTS` button to perform pending enrollments; the app will retrieve the list of them and then iterate through them one at a time and allow you to enroll.  
-Wait for the dialog at the end to confirm successes.
+Wait for the dialog at the end to confirm successes.  This button event is handled in `MainActivity.kt` line 231.
 
 12) Tap the `COUNT PENDING ALERTS` button to count pending alerts.  Wait for the dialog to confirm success and display count.
+This button event is handled in `MainActivity.kt` line 277.
 
 13) Tap the `PERFORM PENDING ALERTS` button to perform pending alerts; the app will retrieve the list of them and then iterate through them one at a time and allow you to perform verifications.  
-Wait for the dialog at the end to confirm successes.
+Wait for the dialog at the end to confirm successes.  This button event is handled in `MainActivity.kt` line 308.
 
 
 
@@ -67,3 +72,9 @@ Wait for the dialog at the end to confirm successes.
 Please also see the quick-reference integration.txt file located here:  https://imageware.atlassian.net/wiki/spaces/MA/pages/704938246
 
 The sample app Github repository is located here:  https://github.com/ImageWare/jumpstart_sample_android
+
+Info about Kotlin, the current Android standard programming language which this sample app is written in:  https://developer.android.com/kotlin
+
+Info about Kotlin Lifecycle-Scope Coroutines, which is what allows this app to require such little actual code:  https://developer.android.com/topic/libraries/architecture/coroutines
+
+Info about Kotlin Synthetic Properties, which is what allows us to casually reference the View components in code by their XML `id` without any `findViewById()` calls but is perhaps not the most code space efficient way to go but it is nice and simple:  https://medium.com/@iateyourmic/synthetic-accessors-in-kotlin-a60184afd94e  
