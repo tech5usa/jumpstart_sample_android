@@ -133,13 +133,14 @@ class MainActivity : AppCompatActivity() {
         //----------------------------
         //BUTTON: REGISTER DEVICE TO USER
         button_register_device_to_user.setOnClickListener {
-            Log.d("REGISTER", "button_register_device_to_user clicked, registering this device to provided email / user ID in background coroutine...")
+            val deviceId = IMS.getThisDevice().getDeviceId()
+            Log.d("REGISTER", "button_register_device_to_user clicked, registering this deviceId $deviceId to provided email / user ID in background coroutine...")
             showBusySpinner()
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     val registrationResult = IMS.registerDeviceWithUserId(personInGMI!!.userId)
                     showGmiDialog(
-                        "Registration request submitted!  If you have email 2FA enabled for this tenant then check your email and click the link now - otherwise, run your tenant admin device approval script now.  Once completed, you may continue in the app.",
+                        "Registration request submitted!  If you have email 2FA enabled for this tenant then check your email and click the link now - otherwise, run your tenant admin device approval script now with set to $deviceId.  This info is also in the log under tag REGISTER for copy / paste.  Once completed, you may continue in the app.",
                         "REGISTER"
                     )
                 } catch (e: Exception) {
