@@ -7,14 +7,6 @@ The `DEVICE_ID_TO_2FA` value can be retrieved from the Android logcat log output
 
 
 
-#NOTE: 
-In the walkthrough, if at any point you get an unexpected error in the response, it is very possible that you either:
-A)  Missed a previous step (one must initialize the SDK before anything else will function, for example -- and one can not check enrolls or alerts without first successfully validating 2nd factor authentication / 2FA)
-B)  Entered some information incorrectly
-
-
-
-
 
 
 #WALKTHROUGH OF SAMPLE CODE USAGE:
@@ -69,6 +61,20 @@ Wait for the dialog at the end to confirm successes.  This button event is handl
 To get a detailed list of pending alerts suitable to directly pass to the SDK for processing, we again call `IMS.getMessagesForPerson()` on line 313.
 Then, we iterate through this list and call `IMS.renderMessage()` as demonstrated on line 365.
 The `launchAndWaitForNativeMessage()` method on line 357 wraps up the required logic necessary to properly resume from a coroutine from a completed alert. 
+
+
+
+
+
+
+
+
+
+#TROUBLESHOOTING: 
+In the walkthrough, if at any point you get an unexpected error in the response, it is very possible that you either:
+A)  Missed a previous step (one must initialize the SDK before anything else will function, for example -- and one can not check enrolls or alerts without first successfully validating 2nd factor authentication / 2FA)
+B)  Entered some information incorrectly
+
 
 
 
