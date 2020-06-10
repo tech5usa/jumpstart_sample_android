@@ -1,6 +1,6 @@
 
 
-The sample app was built on Android Studio v `4.0` `- which was the current release at the time.
+The sample app was built on Android Studio v `4.0` - which was the current release at the time.
 
 
 #IMPORTANT:
