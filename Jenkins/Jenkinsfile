@@ -1,0 +1,86 @@
+#!/usr/bin/env groovy
+/*
+    Build the Android GoVerifyID release files
+
+    See Jenkinsfile.common.Groovy for parameters
+*/
+
+//noinspection GroovyUnusedAssignment
+@Library(['globalFunctions']) _  //'beFunctions'
+
+//noinspection SpellCheckingInspection
+OUTER_JENKINS_NODE_NAME = 'iws03cicdbig'
+
+//Required, duplicated constants from common script:
+VM_NAME = "${JOB_NAME}-${BUILD_NUMBER}-Centos7"
+
+void initCommonScriptObject() {
+    stage('InitPipe') {
+        echo "VM name is '${VM_NAME}'"
+
+        echo "Preparing Jenkins build pipeline common script functions and fields..."
+        // Git checkout before load source the file
+        checkout scm
+
+        // To know files are checked out or not
+        sh 'ls -lhrt'
+
+        def rootDir = pwd()
+        println("Current Directory: " + rootDir)
+
+        // point to exact source file
+        common = load "${rootDir}/Jenkins/Jenkinsfile.common.Groovy"
+
+        echo "common object loaded: " + common
+    }
+}
+
+//Build Pipeline definition
+node(OUTER_JENKINS_NODE_NAME) {
+    initCommonScriptObject()
+    common.stageSlackStart()
+
+    def vmCreatedSuccessfully = false
+    try {
+        common.stageVmMake()
+        vmCreatedSuccessfully = true
+    } catch (Exception e) {
+        common.stageVmDestroy()
+    }
+    if (vmCreatedSuccessfully) {
+        try {
+            node(VM_NAME) {
+                common.stageVmSwapCfg()
+                common.stageTestSyntax()
+                common.stageGitCheckout()
+                common.stageInstallPackages()
+                common.stageVmIp(VM_NAME)
+                common.stageInstallAndroidSdk()
+                common.stageInstallAndroidApis()
+
+                common.stageGetVersionAndChanges()
+
+                //Below for combined build / scan / test stages, runtime :
+                common.stageBuildCfgNoGradleLibs()
+                common.stageBuildTestScan()
+                common.stageLintPublish()
+
+                common.stageOrganizeApks()
+                common.stageDeployApks()
+                common.stageSlackSuccess()
+                common.stageEmailSuccess()
+
+            }   //end VM node
+            common.stagesVmDebugEnvCfgAndDebugSleep(VM_NAME, MINS_SLEEP_BEFORE_VM_AUTODESTRUCTION_ON_SUCCESS)
+        } catch (Exception e) {
+            echo "Exception running main test stages " + e.getMessage()
+            echo "The failure occured while trying to do:  '${testMessage}'"
+            currentBuild.result = 'FAILURE'
+            common.stageSlackFail()
+            common.stageEmailFail()
+            common.stagesVmDebugEnvCfgAndDebugSleep(VM_NAME, MINS_SLEEP_BEFORE_VM_AUTODESTRUCTION_ON_FAILURE)
+        } finally {
+            common.stageVmDestroy()
+        } //end finally
+    }
+}
