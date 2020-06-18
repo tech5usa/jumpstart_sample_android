@@ -36,7 +36,7 @@ dependencies {
 
     //---------------------------------------------------------------------------------
     //Required for GMI SDK
-    implementation (group: 'com.iwsinc.ims', name: 'android_gmi_sdk', version: '7.7.0', ext: 'aar')
+    implementation (group: 'com.iwsinc.ims', name: 'android_gmi_sdk', version: '7.7.1', ext: 'aar')
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
