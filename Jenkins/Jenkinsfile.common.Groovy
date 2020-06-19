@@ -528,7 +528,7 @@ def slackReportLineArtifactory() {
 def slackReportLineDocumentation() {
     return "Documentation: <https://imageware.atlassian.net/wiki/spaces/MA/pages/755204122/How+To+Integrate+Sample+App+Details|How To Use Sample App>" +
             " - <https://imageware.atlassian.net/wiki/spaces/MA/pages/704938246/Integration.txt+for+adding+GMI+SDK+libraries+to+an+app|SDK integration.txt>" +
-            " - <https://artifactory.iwsinc.com:8442/artifactory/webapp/#/artifacts/browse/tree/General/GoVerifyID/Android/SDKs/7.6.18/ims_android_7.6.19_JavadocAPI.zip|SDK 7.6.19 JavaDoc API>\n"
+            " - <https://artifactory.iwsinc.com:8442/artifactory/webapp/#/artifacts/browse/tree/General/GoVerifyID/Android/SDKs/7.7.1/ims_android_7.7.1_JavadocAPI.zip|SDK 7.7.1 JavaDoc API>\n"
 }
 
 def slackReportLineJenkins(boolean includeTests = true) {
