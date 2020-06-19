@@ -6,12 +6,15 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
+    ndkVersion "21.3.6528147"   //This is the version available in Github Actions' current ubuntu VM.  Update here if this changes for speedy builds instead of installing another NDK version in your workflow
+
     defaultConfig {
         applicationId "com.example.iwsgmisampleapp"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 2
-        versionName "1.1"
+        versionCode 3
+        versionName "1.2"
+
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -30,6 +33,7 @@ android {
         //-t allow test packages
         installOptions '-t'
     }
+
 }
 
 dependencies {

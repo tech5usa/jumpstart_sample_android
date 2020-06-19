@@ -1,0 +1,70 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout from Git
+      uses: actions/checkout@v2
+
+    - name: Read full CHANGELOG
+      id: changelog
+      run: echo "::set-output name=body::$(cat changelog.md)"
+
+    - name: Read only latest version CHANGELOG
+      id: changelogLatest
+      run: echo ""::set-env name=CHANGELOG_LATEST::$(grep -A 9999 "## " changelog.md | grep -B 9999 -m2 "## " | sed '$d' | sed '$d' | sed ':a;N;$!ba;s/\n/%0A/g' | sed 's/## //g')""
+
+    - name: Test latest version CHANGELOG output
+      run: echo "${{ env.CHANGELOG_LATEST }}"
+
+    - uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
+    - name: Cache Gradle dependencies
+      uses: actions/cache@v2
+      with:
+        path: ~/.gradle
+        key: ${{ runner.os }}-gradle-full-${{ hashFiles('**/*.gradle*') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-full-
+
+    - name: Build with Gradle
+      id: build
+      run: ./gradlew assembleDebug -x lint
+
+    - name: Organize artifacts in folder
+      run: |
+        mkdir -p ${{ github.workspace }}/artifact
+        cp -v performTenant2faValidation.* ${{ github.workspace }}/artifact/
+        cp -v README.md ${{ github.workspace }}/artifact/
+        cp -v app/build/outputs/apk/debug/app-debug.apk ${{ github.workspace }}/artifact/iws_gmi_sample_app.apk
+
+    - name: Upload Release artifact folder
+      id: upload
+      uses: actions/upload-artifact@v2
+      with:
+        name: IWS_GMI_Sample_App_Package
+        path: ${{ github.workspace }}/artifact/**/*
+
+    - name: Slack Notification
+      uses: rtCamp/action-slack-notify@v2.0.2
+      env:
+        SLACK_CHANNEL: android-dev-botfeed
+        SLACK_COLOR: '#3278BD'
+        SLACK_ICON: https://github.com/rtCamp.png?size=48
+        SLACK_TITLE: New GMI Sample App
+        SLACK_MESSAGE: |
+          New IWS GMI Sample App test build available on Github Artifacts :rocket:\n
+          <https://github.com/ImageWare/jumpstart_sample_android/actions/runs/${{ github.run_id }}|Build job and Artifacts>
+          ```Changelog:
+          ${{ env.CHANGELOG_LATEST }}```
+        SLACK_USERNAME: GithubActions
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
