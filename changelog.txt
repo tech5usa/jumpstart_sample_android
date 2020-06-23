@@ -1,6 +1,0 @@
-
-1.1:
-    Updated GMI SDK to 7.6.19
-
-1.0:
-    Initial release, using GMI SDK 7.6.18

@@ -1,0 +1,104 @@
+name: Android CI
+
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout from Git
+      uses: actions/checkout@v2
+
+    - uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
+    - name: Cache Gradle dependencies
+      uses: actions/cache@v2
+      with:
+        path: ~/.gradle
+        key: ${{ runner.os }}-gradle-full-${{ hashFiles('**/*.gradle*') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-full-
+
+    - name: Get tag name
+      uses: olegtarasov/get-tag@v2
+      id: tagName
+
+    - name: Read full CHANGELOG
+      id: changelog
+      run: echo "::set-output name=body::$(cat changelog.md)"
+
+    - name: Read only latest version CHANGELOG
+      id: changelogLatest
+      run: echo ""::set-env name=CHANGELOG_LATEST::$(grep -A 9999 "## " changelog.md | grep -B 9999 -m2 "## " | sed '$d' | sed '$d' | sed ':a;N;$!ba;s/\n/%0A/g' | sed 's/## //g')""
+
+    - name: Build with Gradle
+      id: build
+      run: ./gradlew assembleDebug -x lint
+
+    - name: Stop Gradle to allow effective caching
+      run: ./gradlew --stop
+
+    - name: Organize artifacts in folder
+      run: |
+        mkdir -p ${{ github.workspace }}/artifact
+        cp -v performTenant2faValidation.* ${{ github.workspace }}/artifact/
+        cp -v README.md ${{ github.workspace }}/artifact/
+        cp -v app/build/outputs/apk/debug/app-debug.apk ${{ github.workspace }}/artifact/iws_gmi_sample_app.apk
+
+    - name: Upload Release artifact folder
+      id: upload
+      uses: actions/upload-artifact@v2
+      with:
+        name: IWS_GMI_Sample_App_Package
+        path: ${{ github.workspace }}/artifact/**/*
+
+    - name: Zip release artifacts for tagged release
+      run: |
+        zip --junk-paths -v IWS_GMI_Sample_App_Package ${{ github.workspace }}/artifact/*
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      id: upload_release_asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+        asset_path: ./IWS_GMI_Sample_App_Package.zip
+        asset_name: IWS_GMI_Sample_App_Package.zip
+        asset_content_type: application/zip
+
+    - name: Slack Notification
+      uses: rtCamp/action-slack-notify@v2.0.2
+      env:
+        SLACK_CHANNEL: android-dev-botfeed
+        SLACK_COLOR: '#00FF99'
+        SLACK_ICON: https://github.com/rtCamp.png?size=48
+        SLACK_TITLE: New GMI Sample App
+        SLACK_MESSAGE: |
+          A new IWS GMI Sample App tagged release, <https://github.com/ImageWare/jumpstart_sample_android/releases/tag/${{ steps.tagName.outputs.tag }}|${{ steps.tagName.outputs.tag }}>, is available on Github Artifacts :rocket:
+          <${{ steps.upload_release_asset.outputs.browser_download_url }}|Release ${{ steps.tagName.outputs.tag }} .ZIP>
+          <https://github.com/ImageWare/jumpstart_sample_android/actions/runs/${{ github.run_id }}|Build job and Artifacts>
+          <https://imageware.atlassian.net/wiki/spaces/MA/pages/755204122/How+To+Integrate+Sample+App+Details|How To Use Sample App>
+          <https://imageware.atlassian.net/wiki/spaces/MA/pages/704938246/Integration.txt+for+adding+GMI+SDK+libraries+to+an+app|SDK integration.txt>
+          <https://artifactory.iwsinc.com:8442/artifactory/webapp/#/artifacts/browse/tree/General/GoVerifyID/Android/SDKs/7.7.1/ims_android_7.7.1_JavadocAPI.zip|SDK 7.7.1 JavaDoc API>
+          ```Changelog:
+          ${{ env.CHANGELOG_LATEST }}```
+        SLACK_USERNAME: GithubActions
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
