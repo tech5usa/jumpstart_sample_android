@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.3:
+    https://imageware.atlassian.net/browse/MOBK-27 - Updated SDK libraries to Github Package dependencies
+
 ## 1.2:
     https://imageware.atlassian.net/browse/MOBK-26 - Migrated CICD build from Jenkins to Github Actions (no code changes)
 
