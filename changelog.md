@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.4:
+    Updated SDK library read token
+
 ## 1.3:
     https://imageware.atlassian.net/browse/MOBK-27 - Updated SDK libraries to Github Package dependencies
 
