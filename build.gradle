@@ -22,7 +22,7 @@ allprojects {
             url = "https://maven.pkg.github.com/ImageWare/android_gmi_sdk"
             credentials {
                 username = "infotech-iws"
-                password = "37aa42ff3289cbe13813854affe60a92d17967ab"
+                password = "8c6352681c74a3e18f347ff3b05451cf49136c7d"
             }
         }
     }
