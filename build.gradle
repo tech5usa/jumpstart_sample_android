@@ -19,8 +19,11 @@ allprojects {
         google()
         jcenter()
         maven {
-            metadataSources { artifact() }  //Required for these custom .aar only libraries with no accompanying .pom files
-            url "https://packagecloud.io/priv/$project.PACKAGECLOUD_READ_TOKEN/ImageWare/dev/maven2"
+            url = "https://maven.pkg.github.com/ImageWare/android_gmi_sdk"
+            credentials {
+                username = "infotech-iws"
+                password = "8c6352681c74a3e18f347ff3b05451cf49136c7d"
+            }
         }
     }
 }
