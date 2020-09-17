@@ -39,7 +39,7 @@ jobs:
 
     - name: Build with Gradle
       id: build
-      run: ./gradlew assembleDebug -x lint
+      run: ./gradlew assembleDebug -x lint -Paws_access_key_id=${{ secrets.AWS_S3_ACCESS_KEY_ID }} -Paws_secret_access_key=${{ secrets.AWS_S3_ACCESS_KEY }}
 
     - name: Stop Gradle to allow effective caching
       run: ./gradlew --stop
