@@ -18,13 +18,22 @@ allprojects {
     repositories {
         google()
         jcenter()
+
         maven {
-            url = "https://maven.pkg.github.com/ImageWare/android_gmi_sdk"
-            credentials {
-                username = "infotech-iws"
-                password = "8c6352681c74a3e18f347ff3b05451cf49136c7d"
+            url = 's3://gmi-sdks/releases'
+            credentials(AwsCredentials) {
+                accessKey = System.env.AWS_ACCESS_KEY_ID ?: findProperty('aws_access_key_id')
+                secretKey = System.env.AWS_SECRET_ACCESS_KEY ?: findProperty('aws_secret_access_key')
             }
         }
+
+//        maven {
+//            url = "https://maven.pkg.github.com/ImageWare/android_gmi_sdk"
+//            credentials {
+//                username = "infotech-iws"
+//                password = "8c6352681c74a3e18f347ff3b05451cf49136c7d"
+//            }
+//        }
         maven {
             url = "https://maven.pkg.github.com/ImageWare/android_redrock_palmid_sdk"
             credentials {
