@@ -34,13 +34,14 @@ allprojects {
 //                password = "8c6352681c74a3e18f347ff3b05451cf49136c7d"
 //            }
 //        }
-        maven {
-            url = "https://maven.pkg.github.com/ImageWare/android_redrock_palmid_sdk"
-            credentials {
-                username = "infotech-iws"
-                password = "8c6352681c74a3e18f347ff3b05451cf49136c7d"
-            }
-        }
+
+//        maven {
+//            url = "https://maven.pkg.github.com/ImageWare/android_redrock_palmid_sdk"
+//            credentials {
+//                username = "infotech-iws"
+//                password = "8c6352681c74a3e18f347ff3b05451cf49136c7d"
+//            }
+//        }
     }
 }
 
