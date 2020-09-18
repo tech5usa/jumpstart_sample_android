@@ -96,7 +96,8 @@ jobs:
         SLACK_TITLE: New GMI Sample App
         SLACK_MESSAGE: |
           A new IWS GMI Sample App tagged release, <https://github.com/ImageWare/jumpstart_sample_android/releases/tag/${{ steps.tagName.outputs.tag }}|${{ steps.tagName.outputs.tag }}>, is available on Github Artifacts :rocket:
-          <${{ steps.upload_release_asset.outputs.browser_download_url }}|Release ${{ steps.tagName.outputs.tag }} .ZIP>
+          <https://github.com/ImageWare/jumpstart_sample_android/releases/tag/${{ steps.tagName.outputs.tag }}|Source code ${{ steps.tagName.outputs.tag }} .ZIP for customers>
+          <${{ steps.upload_release_asset.outputs.browser_download_url }}|Release ${{ steps.tagName.outputs.tag }} .ZIP> (compiled app for testing)
           <https://github.com/ImageWare/jumpstart_sample_android/actions/runs/${{ github.run_id }}|Build job and Artifacts>
           <https://imageware.atlassian.net/wiki/spaces/MA/pages/755204122/How+To+Integrate+Sample+App+Details|How To Use Sample App>
           <https://imageware.atlassian.net/wiki/spaces/MA/pages/704938246/Integration.txt+for+adding+GMI+SDK+libraries+to+an+app|SDK integration.txt>
