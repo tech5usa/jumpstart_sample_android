@@ -1,0 +1,13 @@
+def awsProperties = new Properties()
+
+try {
+    //    awsProperties.load(new FileInputStream(rootProject.file("aws.properties")))
+    file("aws.properties").withInputStream { awsProperties.load(it) }
+    ext.aws_access_key_id = awsProperties.aws_access_key_id
+    ext.aws_secret_access_key = awsProperties.aws_secret_access_key
+
+    //Set env variable AWS_ACCESS_KEY_ID & AWS_SECRET_ACCESS_KEY if not adding a properties file
+    println("aws.properties found and parsed!")
+} catch (FileNotFoundException e) {
+    println("aws.properties not found, publishing will not work without this unless AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables are set.")
+}

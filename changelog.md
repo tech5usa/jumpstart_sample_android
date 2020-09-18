@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6:
+    https://imageware.atlassian.net/browse/MOBK-326 - Updated SDK libraries to IWS AWS S3 repo dependencies
+
+## 1.5:
+    No code changes, redeploy
+
 ## 1.4:
     Updated SDK library read token
 
