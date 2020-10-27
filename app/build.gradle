@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     buildToolsVersion "29.0.3"
 
     ndkVersion "21.3.6528147"   //This is the version available in Github Actions' current ubuntu VM.  Update here if this changes for speedy builds instead of installing another NDK version in your workflow
@@ -11,7 +11,7 @@ android {
     defaultConfig {
         applicationId "com.example.iwsgmisampleapp"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30 //Android 11
         versionCode 8
         versionName "1.7"
 
