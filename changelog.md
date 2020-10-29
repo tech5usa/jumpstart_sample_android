@@ -2,7 +2,7 @@
 
 ## 1.7:
     https://imageware.atlassian.net/browse/MOBK-219 - Updated GMI SDK and its required dependencies
-    Updated GMI SDK to 7.8.6
+    Updated GMI SDK to 7.8.7
     Updated: Kotlin compiler, Android Gradle Plugin, Gradle Build System, Android OS Build Target to Android 11
 
 ## 1.6:
