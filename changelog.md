@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.8:
+    https://imageware.atlassian.net/browse/MOBK-362 - Updated GMI SDK which added missing headers to enroll and verify calls to enable NA1 / production operation (these headers are apparently not required on eks-dev)
+    Updated GMI SDK to 7.8.8
+
 ## 1.7:
     https://imageware.atlassian.net/browse/MOBK-219 - Updated GMI SDK and its required dependencies
     Updated GMI SDK to 7.8.7
