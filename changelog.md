@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9:
+    https://imageware.atlassian.net/browse/MOBK-365 - New GMI SDK fixes nested template capture sequence
+    https://imageware.atlassian.net/browse/MOBK-366 - New GMI SDK fixes nested device template crash
+    Updated GMI SDK to 7.8.9
+
 ## 1.8:
     https://imageware.atlassian.net/browse/MOBK-362 - Updated GMI SDK which added missing headers to enroll and verify calls to enable NA1 / production operation (these headers are apparently not required on eks-dev)
     Updated GMI SDK to 7.8.8
