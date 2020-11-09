@@ -1,6 +1,6 @@
 # Changelog
 
-##1.10:
+## 1.10:
     https://imageware.atlassian.net/browse/MOBK-368 - New GMI SDK fixes nested device initialization issue as well as yesno biometric crash
     Updated GMI SDK to 7.8.10
 
