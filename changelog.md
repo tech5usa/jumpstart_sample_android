@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.11:
+    https://imageware.atlassian.net/browse/MOBK-357 - Adapted Github Actions workflow files to no longer rely on the deprecated / disabled "set-env" command
+
 ## 1.10:
     https://imageware.atlassian.net/browse/MOBK-368 - New GMI SDK fixes nested device initialization issue as well as yesno biometric crash
     Updated GMI SDK to 7.8.10
