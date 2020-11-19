@@ -33,9 +33,15 @@ jobs:
       id: changelog
       run: echo "::set-output name=body::$(cat changelog.md)"
 
-    - name: Read only latest version CHANGELOG
+    - name: Read CHANGELOG for only the latest version
       id: changelogLatest
-      run: echo ""::set-env name=CHANGELOG_LATEST::$(grep -A 9999 "## " changelog.md | grep -B 9999 -m2 "## " | sed '$d' | sed '$d' | sed ':a;N;$!ba;s/\n/%0A/g' | sed 's/## //g')""
+      run: |
+        echo "::echo::on"
+        CHANGELOG=""$(grep -A 9999 "## " changelog.md | grep -B 9999 -m2 "## " | sed '$d' | sed '$d' | sed 's/## //g')""
+        echo ""Got changelog: $CHANGELOG""
+        echo 'CHANGELOG_LATEST<<EOF' >> $GITHUB_ENV
+        echo ""$CHANGELOG"" >> $GITHUB_ENV
+        echo 'EOF' >> $GITHUB_ENV
 
     - name: Build with Gradle
       id: build
