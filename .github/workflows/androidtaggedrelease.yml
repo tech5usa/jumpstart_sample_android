@@ -25,9 +25,11 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-full-
 
-    - name: Get tag name
-      uses: olegtarasov/get-tag@v2
+    #Extract last part of "refs/tags/1.0.0", for example
+    #https://github.community/t/how-to-get-just-the-tag-name/16241/7
+    - name: Get the tag
       id: tagName
+      run: echo ::set-output name=tag::${GITHUB_REF/refs\/tags\//}
 
     - name: Read full CHANGELOG
       id: changelog
