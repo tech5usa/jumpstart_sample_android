@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12:
+    https://imageware.atlassian.net/browse/MOBK-370 - GMI SDK updated which now returns null IMSPerson object instead of IMSServerException when getPerson 404s
+    Updated GMI SDK to 8.0.1
+
 ## 1.11:
     https://imageware.atlassian.net/browse/MOBK-357 - Adapted Github Actions workflow files to no longer rely on the deprecated / disabled "set-env" command
 
