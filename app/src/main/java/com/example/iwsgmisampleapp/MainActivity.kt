@@ -37,18 +37,23 @@ const val EMAIL_ADDRESS_USER_ID = "cpaiano+gmisampleapp@iwsinc.com"
 //const val GMI_APPLICATION_CODE = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
 //const val EMAIL_ADDRESS_USER_ID = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), InteractionManagerListener {
 
     lateinit var accountServiceManager: AccountServiceManager
+    lateinit var messagesServiceManager: MessagesServiceManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //----------------------------------------------------------------------------------------------------------
         //SDK Initialization
         accountServiceManager = AccountServiceManager(this)
+        messagesServiceManager = MessagesServiceManager()
+        messagesServiceManager.register(this, this)
 
-        //----------------------------
+
+        //----------------------------------------------------------------------------------------------------------
         //Populate the text fields with the GMI const vals above if they have been changed:
         if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != GMI_SERVER_URL) edit_text_gmi_server_url.setText(GMI_SERVER_URL)
         if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != GMI_USER_MANAGER_URL) edit_text_gmi_user_manager_url.setText(GMI_USER_MANAGER_URL)
@@ -105,6 +110,7 @@ class MainActivity : AppCompatActivity() {
 
 
                                             //TODO: Figure out how to tell "User not found" vs "Server error" with only this IMSServerException object
+                                            //  Needed: SDK update to provide error code / enum to avoid string parsing at client level
 
 
                                         }
@@ -133,11 +139,7 @@ class MainActivity : AppCompatActivity() {
             showBusySpinner(true)
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-
-
-                    //TODO: Implement
-
-
+                    messagesServiceManager.renderNextWorkItemIfNeeded()
                 } catch (e: Exception) {
                     showSimpleDialog(
                         "Must perform a previous step first, perhaps?  Check of provided email on current GMI server failed, exception was ${e.localizedMessage}",
@@ -150,8 +152,6 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-
-
         //----------------------------
         //BUTTON: COUNT PENDING ENROLLS AND ALERTS
         button_count_pending_enrolls_and_alerts.setOnClickListener {
@@ -159,11 +159,9 @@ class MainActivity : AppCompatActivity() {
             showBusySpinner()
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-
-
-                    //TODO: Implement
-
-
+                    val enrollCount = messagesServiceManager.activeEnrollmentsCount
+                    val alertCount = messagesServiceManager.activeAlertsCount
+                    showSimpleDialog("There are $enrollCount pending enrolls and $alertCount alerts", "Message Count")
                  } catch (e: Exception) {
                     showSimpleDialog(
                         "Must perform a previous step first, perhaps?  Registration on current GMI server failed, exception was ${e.localizedMessage}",
@@ -174,6 +172,30 @@ class MainActivity : AppCompatActivity() {
                 showBusySpinner(false)
             }
         }
+    }
+
+
+    //------------------------------------------------------------------------------------
+    //InteractionManagerListener overrides
+
+    override fun onAlertAccepted() {
+        showSimpleDialog(title = "Alert accepted")
+    }
+
+    override fun onAlertCompleted() {
+        showSimpleDialog(title = "Alert completed")
+    }
+
+    override fun onAlertRejected() {
+        showSimpleDialog(title = "Alert rejected")
+    }
+
+    override fun onEnrollmentCompleted() {
+        showSimpleDialog(title = "Enroll completed")
+    }
+
+    override fun onEnrollmentHidden() {
+        showSimpleDialog(title = "Enroll hidden")
     }
 
     //------------------------------------------------------------------------------------
@@ -219,4 +241,5 @@ class MainActivity : AppCompatActivity() {
     private fun TextInputEditText.extractText() = text.toString()
 
     private fun Any.objectToString(): String? = GsonBuilder().create().toJson(this)
+
 }
