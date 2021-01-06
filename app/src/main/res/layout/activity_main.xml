@@ -89,14 +89,6 @@
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_init_gmi_sdk"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:focusable="true"
-                android:text="Initialize GMI SDK" />
-
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -109,60 +101,29 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_check_and_set_email"
+                android:id="@+id/button_register_user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Check and Set Email / UserID" />
+                android:text="Register user" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_register_device_to_user"
+                android:id="@+id/button_sync_and_run_first_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Register Device to User" />
+                android:text="Sync and run first expected item" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_get_person_tenant_data"
+                android:id="@+id/button_count_pending_enrolls_and_alerts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Get Person Tenant Data" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_count_pending_enrolls"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Count Pending Enrollments" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_perform_pending_enrolls"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Perform Pending Enrollments" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_count_pending_alerts"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Count Pending Alerts" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_perform_pending_alerts"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Perform Pending Alerts" />
+                android:text="Count pending enrolls and alerts" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
     </ScrollView>
-
-
-
 
 <!-- The invisible touch stealing overlay view and "busy" spinner layer to prevent users from tapping buttons while app is busy -->
     <RelativeLayout
@@ -180,8 +141,6 @@
             android:layout_centerInParent="true"/>
 
     </RelativeLayout>
-
-
 
 </RelativeLayout>
 

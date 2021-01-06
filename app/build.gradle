@@ -41,7 +41,7 @@ dependencies {
     //---------------------------------------------------------------------------------
     //Required for GMI SDK
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation (group: 'com.iwsinc.ims', name: 'android_gmi_sdk', version: '8.0.1', ext: 'aar')
+    implementation (group: 'com.iwsinc.ims', name: 'android_gmi_sdk', version: '9.0.0alpha461978711', ext: 'aar')
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.google.code.gson:gson:2.8.5'

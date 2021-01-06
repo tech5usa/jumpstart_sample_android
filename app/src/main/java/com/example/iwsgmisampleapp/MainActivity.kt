@@ -1,7 +1,6 @@
 package com.example.iwsgmisampleapp
 
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
@@ -11,33 +10,43 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.GsonBuilder
-import com.iwsinc.ims.api.IMS
-import com.iwsinc.ims.api.IMSMessage
-import com.iwsinc.ims.api.IMSMessageInfo
-import com.iwsinc.ims.api.IMSPerson
-import com.iwsinc.ims.response.IMSResponse
+import com.iwsinc.ims.api.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.lang.StringBuilder
 
+const val GMI_SERVER_TITLE = "My GMI Server"
+const val GMI_USER_NAME= "Test GMI User"
+
+//TODO: Delete me: AWS-Stage
+const val GMI_SERVER_URL = "https://gmi-stage.dev.gomobileinteractive.com/v1/gmiserver"
+const val GMI_USER_MANAGER_URL = "https://gmi-stage.dev.gomobileinteractive.com/v1/oauth2"
+const val GMI_CLIENT_ID = "GoVerifyID"
+const val GMI_CLIENT_SECRET = "Un9#Y|&BX,I.uZfU"
+const val GMI_TENANT_CODE = "GmiSampleAppTenant"
+const val GMI_APPLICATION_CODE = "GoVerifyID"
+const val EMAIL_ADDRESS_USER_ID = "cpaiano+gmisampleapp@iwsinc.com"
 
 //If the below constants are filled out with valid information, it will appear when the app launches:
-const val GMI_SERVER_URL = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
-const val GMI_USER_MANAGER_URL = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
-const val GMI_CLIENT_ID = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
-const val GMI_CLIENT_SECRET = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
-const val GMI_TENANT_CODE = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
-const val GMI_APPLICATION_CODE = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
-const val EMAIL_ADDRESS_USER_ID = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
+//const val GMI_SERVER_URL = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
+//const val GMI_USER_MANAGER_URL = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
+//const val GMI_CLIENT_ID = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
+//const val GMI_CLIENT_SECRET = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
+//const val GMI_TENANT_CODE = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
+//const val GMI_APPLICATION_CODE = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
+//const val EMAIL_ADDRESS_USER_ID = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
 
 class MainActivity : AppCompatActivity() {
 
-    private var personInGMI: IMSPerson? = null
+    lateinit var accountServiceManager: AccountServiceManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        //SDK Initialization
+        accountServiceManager = AccountServiceManager(this)
 
         //----------------------------
         //Populate the text fields with the GMI const vals above if they have been changed:
@@ -55,31 +64,59 @@ class MainActivity : AppCompatActivity() {
 
 
         //----------------------------
-        //BUTTON: INITIALIZE GMI SDK
-        button_init_gmi_sdk.setOnClickListener {
-            Log.d("INIT_SDK", "button_init_gmi_sdk clicked, Initializing SDK with provided parameters in background coroutine...")
+        //BUTTON: REGISTER USER
+        button_register_user.setOnClickListener {
+            Log.d("REGISTER", "button_register_user clicked, Registering user with provided parameters in background coroutine...")
             showBusySpinner(true)
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    IMS.startIMS(
-                        this@MainActivity,
+                    val configuration = Configuration(
+                        GMI_SERVER_TITLE,
                         edit_text_gmi_server_url.extractText(),
+                        edit_text_gmi_user_manager_url.extractText(),
+                        edit_text_gmi_client_id.extractText(),
+                        edit_text_gmi_client_secret.extractText(),
                         edit_text_gmi_tenant_code.extractText(),
                         edit_text_gmi_application_code.extractText()
                     )
-                    IMS.setUserManagerUrl(edit_text_gmi_user_manager_url.extractText())
-                    IMS.acquireOAuthCredentials(
-                        edit_text_gmi_client_id.extractText(),
-                        edit_text_gmi_client_secret.extractText()
+                    val profile = Profile(
+                        edit_text_email.extractText(),
+                        configuration,
+                        null,
+                        GMI_USER_NAME
                     )
-                    showGmiDialog(
-                        "SDK successfully initialized with provided parameters!",
-                        "INIT_SDK"
-                    )
+
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        accountServiceManager.register(profile, true)
+                            .collect {
+                                when(it) {
+                                    is Result.Success -> {
+                                        when (it.data) {
+                                            RegistrationStatus.PENDING_VERIFICATION -> {
+                                                showSimpleDialog(title = "Check your email to confirm registration")
+                                            }
+                                            RegistrationStatus.USER_VERIFIED -> {
+                                                showSimpleDialog(title = "Account registration successfully completed")
+                                            }
+                                        }
+                                    }
+                                    is Result.Error -> {
+                                        when (it.exception) {
+
+
+                                            //TODO: Figure out how to tell "User not found" vs "Server error" with only this IMSServerException object
+
+
+                                        }
+                                        showSimpleDialog(title = "IMSServerException", message = "${it.exception.message}")
+                                    }
+                                }
+                            }
+                    }
                 } catch (e: Exception) {
-                    showGmiDialog(
-                        "Initialization of GMI SDK failed, exception was ${e.localizedMessage}",
-                        "INIT_SDK",
+                    showSimpleDialog(
+                        "Registration of GMI SDK failed, exception was ${e.localizedMessage}",
+                        "REGISTER EXCEPTION",
                         e
                     )
                 }
@@ -89,290 +126,58 @@ class MainActivity : AppCompatActivity() {
 
 
 
-
-
         //----------------------------
-        //BUTTON: CHECK AND SET EMAIL
-        button_check_and_set_email.setOnClickListener {
-            Log.d("CHECK_EMAIL", "button_check_and_set_email clicked, checking provided email / user ID in background coroutine...")
+        //BUTTON: SYNC AND RUN FIRST ITEM
+        button_sync_and_run_first_item.setOnClickListener {
+            Log.d("SYNC_AND_RUN1", "button_sync_and_run_first_item clicked, synchronizing and running first expected item in background coroutine...")
             showBusySpinner(true)
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
 
-                    personInGMI = IMS.getPersonWithUserId(
-                        edit_text_email.extractText(),
-                        IMS.getServer())
 
-                    if (personInGMI == null) {
-                        showGmiDialog(
-                            "Provided user ID / email address is not available on the current GMI server!",
-                            "CHECK_EMAIL"
-                        )
-                    } else {
-                        showGmiDialog(
-                            "Provided user ID / email address is valid, exists on the current GMI server, person ID is ${personInGMI?.id}",
-                            "CHECK_EMAIL"
-                        )
-                    }
+                    //TODO: Implement
+
+
                 } catch (e: Exception) {
-                    showGmiDialog(
-                        "Must perform a previous step first!  Check of provided email on current GMI server failed, exception was ${e.localizedMessage}",
-                        "CHECK_EMAIL",
+                    showSimpleDialog(
+                        "Must perform a previous step first, perhaps?  Check of provided email on current GMI server failed, exception was ${e.localizedMessage}",
+                        "SYNC_AND_RUN1 EXCEPTION",
                         e
                     )
                 }
                 showBusySpinner(false)
             }
         }
-
-
 
 
 
 
         //----------------------------
-        //BUTTON: REGISTER DEVICE TO USER
-        button_register_device_to_user.setOnClickListener {
-            val deviceId = IMS.getThisDevice().getDeviceId()
-            Log.d("REGISTER", "button_register_device_to_user clicked, registering this deviceId $deviceId to provided email / user ID in background coroutine...")
+        //BUTTON: COUNT PENDING ENROLLS AND ALERTS
+        button_count_pending_enrolls_and_alerts.setOnClickListener {
+            Log.d("COUNT_MSGS", "button_count_pending_enrolls_and_alerts clicked, counting pending enrolls and alerts in background coroutine...")
             showBusySpinner()
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    val registrationResult = IMS.registerDeviceWithUserId(personInGMI!!.userId)
-                    showGmiDialog(
-                        "Registration request submitted!  If you have email 2FA enabled for this tenant then check your email and click the link now - otherwise, run your tenant admin device approval script now with set to $deviceId.  This info is also in the log under tag REGISTER for copy / paste.  Once completed, you may continue in the app.",
-                        "REGISTER"
-                    )
-                } catch (e: Exception) {
-                    showGmiDialog(
-                        "Must perform a previous step first!  Registration on current GMI server failed, exception was ${e.localizedMessage}",
-                        "REGISTER",
+
+
+                    //TODO: Implement
+
+
+                 } catch (e: Exception) {
+                    showSimpleDialog(
+                        "Must perform a previous step first, perhaps?  Registration on current GMI server failed, exception was ${e.localizedMessage}",
+                        "COUNT_MSGS EXCEPTION",
                         e
                     )
                 }
                 showBusySpinner(false)
             }
         }
-
-
-
-
-
-
-
-        //----------------------------
-        //BUTTON: GET PERSON TENANT DATA
-        button_get_person_tenant_data.setOnClickListener {
-            Log.d("TENANT_DATA", "button_get_person_tenant_data clicked, retrieving Person Tenant Data in background coroutine...")
-            showBusySpinner()
-            lifecycleScope.launch(Dispatchers.IO) {
-                try {
-                    personInGMI = IMS.getPersonTenantData(personInGMI!!.id, IMS.getServer())
-                    showGmiDialog(
-                        "PersonTenantData retrieved: ${personInGMI!!.objectToString()}",
-                        "TENANT_DATA"
-                    )
-                } catch (e: Exception) {
-                    showGmiDialog(
-                        "Must perform a previous step first!  Retrieval of Person Tenant Data on current GMI server failed, exception was ${e.localizedMessage}",
-                        "TENANT_DATA",
-                        e
-                    )
-                }
-                showBusySpinner(false)
-            }
-        }
-
-
-
-
-
-
-
-
-        //----------------------------
-        //BUTTON: COUNT PENDING ENROLLMENTS
-        button_count_pending_enrolls.setOnClickListener {
-            Log.d("COUNT_ENROLL", "button_count_pending_enrolls clicked, counting pending enrolls for current user in background coroutine...")
-            showBusySpinner()
-            lifecycleScope.launch(Dispatchers.IO) {
-                try {
-                    var pendingEnrollments = IMS.getPendingEnrollmentInfos(personInGMI)
-                    if (pendingEnrollments == null || pendingEnrollments.isEmpty()) {
-                        showGmiDialog(
-                            "No pending enrollments for the current user!",
-                            "COUNT_ENROLL"
-                        )
-                    } else {
-                        showGmiDialog(
-                            "Counted ${pendingEnrollments.size} pending enrollments for the current user!",
-                            "COUNT_ENROLL"
-                        )
-                    }
-                } catch (e: Exception) {
-                    showGmiDialog(
-                        "Must perform a previous step first!  Count of pending enrollments for current user failed, exception was ${e.localizedMessage}",
-                        "COUNT_ENROLL",
-                        e
-                    )
-                }
-                showBusySpinner(false)
-            }
-        }
-
-
-
-
-
-
-
-        //----------------------------
-        //BUTTON: PERFORM PENDING ENROLLMENTS
-        button_perform_pending_enrolls.setOnClickListener {
-            Log.d("ENROLL", "button_perform_pending_enrolls clicked, performing pending enrolls for current user...")
-            showBusySpinner()
-            lifecycleScope.launch(Dispatchers.IO) {
-                try {
-                    var pendingEnrollments = IMS.getPendingEnrollments(personInGMI)
-                    if (pendingEnrollments == null || pendingEnrollments.isEmpty()) {
-                        showGmiDialog(
-                            "No pending enrollments for the current user!",
-                            "ENROLL"
-                        )
-                    } else {
-                        var resultStringBuilder = StringBuilder()
-                        for (enrollment in pendingEnrollments) {
-                            val response: IMS.EnrollResponse? = IMS.nativeEnroll(
-                                this@MainActivity,
-                                enrollment
-                            )
-                            resultStringBuilder.append("${enrollment.enrollInfo.captureType} success: ${response?.success()}\n")
-                            Log.i("ENROLL", "enrollment result for ${enrollment.enrollInfo.captureType}: success: ${response?.success()} - ${response?.objectToString()}")
-                        }
-
-                        showGmiDialog(
-                            "Processed ${pendingEnrollments.size} enrollments.\n$resultStringBuilder\nFor more details, see the Android logcat output.",
-                            "ENROLL"
-                        )
-                    }
-                } catch (e: Exception) {
-                    showGmiDialog(
-                        "Must perform a previous step first!  Perform pending enrollments for current user failed, exception was ${e.localizedMessage}",
-                        "ENROLL",
-                        e
-                    )
-                }
-                showBusySpinner(false)
-            }
-        }
-
-
-
-
-
-
-
-        //----------------------------
-        //BUTTON: COUNT PENDING ALERTS
-        button_count_pending_alerts.setOnClickListener {
-            Log.d("COUNT_ALERTS", "button_count_pending_alerts clicked, counting pending alerts for current user in background coroutine...")
-            showBusySpinner()
-            lifecycleScope.launch(Dispatchers.IO) {
-                try {
-                    var pendingAlerts = IMS.getMessagesForPerson(personInGMI)
-                    if (pendingAlerts == null || pendingAlerts.isEmpty()) {
-                        showGmiDialog("No pending alerts for the current user!", "COUNT_ALERTS")
-                    } else {
-                        showGmiDialog(
-                            "Counted ${pendingAlerts.size} pending alerts for the current user!",
-                            "COUNT_ALERTS"
-                        )
-                    }
-                } catch (e: Exception) {
-                    showGmiDialog(
-                        "Must perform a previous step first!  Count of pending enrollments for current user failed, exception was ${e.localizedMessage}",
-                        "COUNT_ALERTS",
-                        e
-                    )
-                }
-                showBusySpinner(false)
-            }
-        }
-
-
-
-
-
-        //----------------------------
-        //BUTTON: PERFORM PENDING ALERTS
-        button_perform_pending_alerts.setOnClickListener {
-            Log.d("ALERTS", "button_perform_pending_alerts clicked, performing pending alerts for current user...")
-            showBusySpinner()
-            lifecycleScope.launch(Dispatchers.IO) {
-                try {
-                    var pendingAlerts = IMS.getMessagesForPerson(personInGMI)
-                    if (pendingAlerts == null || pendingAlerts.isEmpty()) {
-                        showGmiDialog("No pending alerts for the current user!", "ALERTS")
-                    } else {
-                        var resultStringBuilder = StringBuilder()
-                        for (alert in pendingAlerts) {
-                            val response = launchAndWaitForNativeMessage(
-                                this@MainActivity,
-                                alert
-                            )
-
-                            if (response?.successfulVerificationEvent == true) {    //If successful, we must mark the alert as "read" on the server or it will remain pending
-                                IMS.markMessageAsRead(alert)
-                            }
-
-                            resultStringBuilder.append("${alert.template.substringAfterLast('/')} success: ${response?.successfulVerificationEvent}\n")
-                            Log.i("ALERTS", "${alert.enrollInfo.captureType} success: ${response?.successfulVerificationEvent} - ${response?.objectToString()}")
-                        }
-
-                        showGmiDialog(
-                            "Processed ${pendingAlerts.size} alerts.\n$resultStringBuilder\nFor more details, see the Android logcat output.",
-                            "ALERTS"
-                        )
-                    }
-                } catch (e: Exception) {
-                    showGmiDialog(
-                        "Must perform a previous step first!  Perform pending alerts for current user failed, exception was ${e.localizedMessage}",
-                        "ALERTS",
-                        e
-                    )
-                }
-                showBusySpinner(false)
-            }
-        }
-
     }
-
-
-
-
 
     //------------------------------------------------------------------------------------
     //Utility functions to keep the above code clean and readable
-
-    private suspend fun launchAndWaitForNativeMessage(context: Context, imsMessageInfo: IMSMessageInfo): IMSResponse? {
-        Log.i("LAUNCH", ".launchAndWaitForNativeMessage() launching IMS.renderMessage...")
-
-        val imsMessage = imsMessageInfo.pullMessage(personInGMI!!)
-
-        val listener = BlockingNativeMessageResponseListener()
-
-        listener.requestAndWaitForPermit()
-        IMS.renderMessage(imsMessage, context, listener)
-
-        //Wait here until response, then release resulting sermaphore permit
-        listener.requestAndWaitForPermit()
-        Log.i("LAUNCH",".launchAndWaitForNativeMessage() execution returned from IMS.renderMessage with response: ${listener.lastResponse}")
-
-        listener.releasePermit()
-        Log.i("LAUNCH",".launchAndWaitForNativeMessage() execution returned from IMS.renderMessage, released permit.")
-        return listener.lastResponse
-    }
-
 
     private fun showBusySpinner(showSpinner: Boolean = true) {
         lifecycleScope.launch(Dispatchers.Main) {
@@ -380,8 +185,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showGmiDialog(
-        message: String?,
+    private fun showSimpleDialog(
+        message: String? = null,
         title: String? = null,
         exception: Exception? = null
     ) {
@@ -404,17 +209,13 @@ class MainActivity : AppCompatActivity() {
                 Log.e("DIALOG_ERR", "showDialog($title, $message)", exception)
             }
 
-            dialog?.setButton(Dialog.BUTTON_POSITIVE, "OK", DialogInterface.OnClickListener { dialog, _ -> dialog.dismiss() })
+            dialog?.setButton(Dialog.BUTTON_POSITIVE, "OK", DialogInterface.OnClickListener { dialog1, _ -> dialog1.dismiss() })
             dialog?.show()
         }
     }
 
     //------------------------------------------------------------------------
-    //Kotin extensions functions
-
-    fun IMSMessageInfo.pullMessage(imsPerson: IMSPerson): IMSMessage? =
-        IMS.pullMessage(this, imsPerson)
-
+    //Kotin extension functions
     private fun TextInputEditText.extractText() = text.toString()
 
     private fun Any.objectToString(): String? = GsonBuilder().create().toJson(this)

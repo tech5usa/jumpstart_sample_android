@@ -14,11 +14,30 @@ The `DEVICE_ID_TO_2FA` value can be retrieved from the Android logcat log output
 
 
 #WALKTHROUGH OF SAMPLE CODE USAGE:
+NOTE - You might have to manually add the following import in order to work with the `Result` object properly (the IDE for some reason does not automatically import it) :
+import com.iwsinc.ims.api.Result
+
+
 1)  In `MainActivity.kt` - Ensure the `PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION` values have all been replaced by actual configuration values.  (Lines 26-32)
 
 2)  Compile and run the `app` module on an Android device, have the `logcat` log output up.  
 
 3)  The configuration values you entered should be displayed at the top of the screen on your Android device.  If needed, you may edit them here.  Your changes will not persist.
+
+
+
+
+
+
+
+#TODO: NEED TO UPDATE BELOW TO MATCH NEW SDK INTERFACE TESTING PROCEDURE
+
+
+
+
+
+
+
 
 4)  Tap the `INITIALIZE GMI SDK` button, wait for the dialog to confirm success.   This button event is handled in `MainActivity.kt` line 59.
 First, we must call `IMS.startIMS()`  on line 64 to start the SDK.
