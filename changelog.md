@@ -3,6 +3,7 @@
 ## 2.000:
     https://imageware.atlassian.net/browse/MOBK-399 - Adapted sample app to exercise new SDK interface which now matches iOS
     Updated Android Gradle Plugin
+    Updated GMI SDK to 9.0.0
 
 ## 1.12:
     https://imageware.atlassian.net/browse/MOBK-370 - GMI SDK updated which now returns null IMSPerson object instead of IMSServerException when getPerson 404s
