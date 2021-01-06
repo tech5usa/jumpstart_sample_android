@@ -121,6 +121,13 @@
                 android:layout_gravity="center"
                 android:text="Count pending enrolls and alerts" />
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/button_show_profile_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Show profile details" />
+
         </androidx.appcompat.widget.LinearLayoutCompat>
 
     </ScrollView>

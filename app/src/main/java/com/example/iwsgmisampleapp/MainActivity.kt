@@ -142,7 +142,7 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
                     messagesServiceManager.renderNextWorkItemIfNeeded()
                 } catch (e: Exception) {
                     showSimpleDialog(
-                        "Must perform a previous step first, perhaps?  Check of provided email on current GMI server failed, exception was ${e.localizedMessage}",
+                        "Must perform a previous step first, perhaps?  Sync/Run1st failed, exception was ${e.localizedMessage}",
                         "SYNC_AND_RUN1 EXCEPTION",
                         e
                     )
@@ -164,8 +164,34 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
                     showSimpleDialog("There are $enrollCount pending enrolls and $alertCount alerts", "Message Count")
                  } catch (e: Exception) {
                     showSimpleDialog(
-                        "Must perform a previous step first, perhaps?  Registration on current GMI server failed, exception was ${e.localizedMessage}",
+                        "Must perform a previous step first, perhaps?  Counting enrolls and alerts failed, exception was ${e.localizedMessage}",
                         "COUNT_MSGS EXCEPTION",
+                        e
+                    )
+                }
+                showBusySpinner(false)
+            }
+        }
+
+
+        //----------------------------
+        //BUTTON: SHOW PROFILE DETAILS
+        button_show_profile_details.setOnClickListener {
+            Log.d("PROFILED", "button_show_profile_details clicked, constructing profile details in background coroutine...")
+            showBusySpinner()
+            lifecycleScope.launch(Dispatchers.IO) {
+                try {
+
+
+
+                    //TODO: Implement
+
+
+
+                } catch (e: Exception) {
+                    showSimpleDialog(
+                        "Must perform a previous step first, perhaps?  Profile details construction failed, exception was ${e.localizedMessage}",
+                        "PROFILED EXCEPTION",
                         e
                     )
                 }
