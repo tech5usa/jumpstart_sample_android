@@ -19,23 +19,14 @@ import kotlinx.coroutines.launch
 const val GMI_SERVER_TITLE = "My GMI Server"
 const val GMI_USER_NAME= "Test GMI User"
 
-//TODO: Delete me: AWS-Stage
-const val GMI_SERVER_URL = "https://gmi-stage.dev.gomobileinteractive.com/v1/gmiserver"
-const val GMI_USER_MANAGER_URL = "https://gmi-stage.dev.gomobileinteractive.com/v1/oauth2"
-const val GMI_CLIENT_ID = "GoVerifyID"
-const val GMI_CLIENT_SECRET = "Un9#Y|&BX,I.uZfU"
-const val GMI_TENANT_CODE = "GmiSampleAppTenant"
-const val GMI_APPLICATION_CODE = "GoVerifyID"
-const val EMAIL_ADDRESS_USER_ID = "cpaiano+gmisampleapp@iwsinc.com"
-
 //If the below constants are filled out with valid information, it will appear when the app launches:
-//const val GMI_SERVER_URL = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
-//const val GMI_USER_MANAGER_URL = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
-//const val GMI_CLIENT_ID = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
-//const val GMI_CLIENT_SECRET = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
-//const val GMI_TENANT_CODE = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
-//const val GMI_APPLICATION_CODE = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
-//const val EMAIL_ADDRESS_USER_ID = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
+const val GMI_SERVER_URL = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
+const val GMI_USER_MANAGER_URL = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
+const val GMI_CLIENT_ID = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
+const val GMI_CLIENT_SECRET = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
+const val GMI_TENANT_CODE = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
+const val GMI_APPLICATION_CODE = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
+const val EMAIL_ADDRESS_USER_ID = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
 
 class MainActivity : AppCompatActivity(), InteractionManagerListener {
 
