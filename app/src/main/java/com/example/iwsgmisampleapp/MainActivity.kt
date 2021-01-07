@@ -41,6 +41,9 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
 
     lateinit var accountServiceManager: AccountServiceManager
     lateinit var messagesServiceManager: MessagesServiceManager
+    var profileDetailsManager: ProfileDetailsManager? = null
+    var configuration: Configuration? = null
+    var profile: Profile? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +78,7 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
             showBusySpinner(true)
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    val configuration = Configuration(
+                    configuration = Configuration(
                         GMI_SERVER_TITLE,
                         edit_text_gmi_server_url.extractText(),
                         edit_text_gmi_user_manager_url.extractText(),
@@ -84,15 +87,15 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
                         edit_text_gmi_tenant_code.extractText(),
                         edit_text_gmi_application_code.extractText()
                     )
-                    val profile = Profile(
+                    profile = Profile(
                         edit_text_email.extractText(),
-                        configuration,
+                        configuration!!,
                         null,
                         GMI_USER_NAME
                     )
 
                     lifecycleScope.launch(Dispatchers.IO) {
-                        accountServiceManager.register(profile, true)
+                        accountServiceManager.register(profile!!, true)
                             .collect {
                                 when(it) {
                                     is Result.Success -> {
@@ -181,12 +184,22 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
             showBusySpinner()
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
+                    profileDetailsManager = ProfileDetailsManager(profile!!, messagesServiceManager)
 
-
-
-                    //TODO: Implement
-
-
+                    val profileDetailStringBuilder = StringBuilder()
+                    for (tenant in profileDetailsManager!!.sectionHeaders) {
+                        with (profileDetailStringBuilder) {
+                            append(tenant).append(":\n")
+                            for (enrollment in profileDetailsManager!!.enrollsTenantMap[tenant]!!) {
+                                append("-->").append(enrollment.captureType).append(":\n")
+                                append("---->").append("Hidden: ").append(enrollment.hidden).append("\n")
+                                append("---->").append("Completed: ").append(enrollment.completed).append("\n")
+                                append("---->").append("AlgCode: ").append(enrollment.algCode).append("\n")
+                            }
+                            append("\n")
+                        }
+                        showSimpleDialog(profileDetailStringBuilder.toString(), "PROFILE DETAILS")
+                    }
 
                 } catch (e: Exception) {
                     showSimpleDialog(
