@@ -1,5 +1,6 @@
 package com.example.iwsgmisampleapp
 
+import android.util.Log
 import com.iwsinc.ims.api.Enrollment
 import com.iwsinc.ims.api.MessagesServiceManager
 import com.iwsinc.ims.api.Profile
@@ -18,17 +19,18 @@ class ProfileDetailsManager(private val profile: Profile, private val messagesSe
     fun refresh() {
         enrollsForAccount = messagesServiceManager.enrolls.filter {
             (it.profile!!.email == profile.email)
-                    && (it.profile!!.configuration.gmiServerUrl == profile.configuration.gmiServerUrl)
+                    && (it.profile!!.configuration!!.gmiServerUrl == profile.configuration!!.gmiServerUrl)
                     && (it.captureType != null)
                     && (it.captureType!!.isNotEmpty())
         }
 
         for (enrollment in enrollsForAccount) {
-
-            //TODO: Change to `enrollment.tenant` once this field is added to the GMI SDK
-            val tenantCode = enrollment.profile!!.configuration.defaultTenantCode
-
+            val tenantCode = enrollment.tenant
             enrollsTenantFlat.add(enrollment)
+            if (tenantCode == null) {
+                Log.w("ProfileDetails", "ProfileDetailsManager.refresh(): enrollment ${enrollment.captureType} has null tenant!")
+                continue
+            }
             if (enrollsTenantMap[tenantCode] == null) {
                 enrollsTenantMap[tenantCode] = mutableListOf()
             }
