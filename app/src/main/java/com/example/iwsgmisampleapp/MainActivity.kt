@@ -91,17 +91,17 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
                                 when(it) {
                                     is Result.Success -> {
                                         when (it.data) {
-                                            RegistrationStatus.PENDING_VERIFICATION -> {
+                                            RegistrationStatus.pendingVerification -> {
                                                 showSimpleDialog(title = "Check your email to confirm registration")
                                             }
-                                            RegistrationStatus.USER_VERIFIED -> {
+                                            RegistrationStatus.userVerified -> {
                                                 showSimpleDialog(title = "Account registration successfully completed")
                                             }
                                         }
                                     }
                                     is Result.Error -> {
                                         when (it.error) {
-                                            GMIError.USER_NOT_FOUND -> {
+                                            GMIError.userNotFound -> {
                                                 showSimpleDialog("User not found on this server")
                                             }
                                             else -> {
