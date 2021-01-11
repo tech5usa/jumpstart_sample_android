@@ -100,15 +100,14 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
                                         }
                                     }
                                     is Result.Error -> {
-                                        when (it.exception) {
-
-
-                                            //TODO: Figure out how to tell "User not found" vs "Server error" with only this IMSServerException object
-                                            //  Needed: SDK update to provide error code / enum to avoid string parsing at client level
-
-
+                                        when (it.error) {
+                                            GMIError.USER_NOT_FOUND -> {
+                                                showSimpleDialog("User not found on this server")
+                                            }
+                                            else -> {
+                                                showSimpleDialog(title = "Server error")
+                                            }
                                         }
-                                        showSimpleDialog(title = "IMSServerException", message = "${it.exception.message}")
                                     }
                                 }
                             }
@@ -123,7 +122,6 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
                 showBusySpinner(false)
             }
         }
-
 
 
         //----------------------------
