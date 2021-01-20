@@ -42,6 +42,22 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-full-
 
+    - name: Read NDK version from githubactions.gradle
+      id: ndkVersion
+      run: |
+        echo "::echo::on"
+        NDKVERSION=""$(grep "ndkVersion" app/githubactions.gradle | grep -o '".*"' | tr -d '"')""
+        echo ""Got NDKVERSION: NDKVERSION""
+        echo "::set-output name=version::$NDKVERSION"
+
+    - name: Test NDK version output
+      run: echo "${{ steps.ndkVersion.outputs.version }}"
+
+      #Below is needed for proper builds in Github Actions - must match version in the githubactions.gradle file
+    - name: Install Android NDK
+      run: echo "y" | sudo "$ANDROID_HOME/tools/bin/sdkmanager" --install "ndk;${{ steps.ndkVersion.outputs.version }}"
+      #--sdk_root=${ANDROID_SDK_ROOT}
+
     - name: Build with Gradle
       id: build
       env:
