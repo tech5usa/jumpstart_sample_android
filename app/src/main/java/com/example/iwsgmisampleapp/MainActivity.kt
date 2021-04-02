@@ -350,7 +350,7 @@ class MainActivity : AppCompatActivity() {
                 Log.e("DIALOG_ERR", "showDialog($title, $message)", exception)
             }
 
-            dialog?.setButton(Dialog.BUTTON_POSITIVE, "OK", DialogInterface.OnClickListener { dialog, _ -> dialog.dismiss() })
+            dialog?.setButton(Dialog.BUTTON_POSITIVE, "OK", DialogInterface.OnClickListener { gmiDialog, _ -> gmiDialog.dismiss() })
             dialog?.show()
         }
     }
