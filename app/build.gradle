@@ -26,6 +26,11 @@ android {
         }
     }
 
+    //Below compileOptions are required to build as we have Java 8 bytecode in our libraries:
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
 
     //This allows unsigned -debug.apk to be sideloaded normally
     adbOptions {
