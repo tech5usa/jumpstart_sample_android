@@ -1,2 +1,3 @@
+include ':gmisdksampleapp'
 include ':app'
 rootProject.name = "IWS GMI Sample App"
