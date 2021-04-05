@@ -21,53 +21,43 @@ The `DEVICE_ID_TO_2FA` value can be retrieved from the Android logcat log output
 3)  The configuration values you entered should be displayed at the top of the screen on your Android device.  If needed, you may edit them here.  Your changes will not persist.
 
 4)  Tap the `INITIALIZE GMI SDK` button, wait for the dialog to confirm success.   This button event is handled in `MainActivity.kt` line 59.
-First, we must call `IMS.startIMS()`  on line 64 to start the SDK.
-Next, we must call `IMS.setUserManagerUrl()`  on line 70 to set the appropriate usermanager URL.
-Next, we must call `IMS.acquireOAuthCredentials()`  on line 71 to actually acquire credentials to access the GMI server
+First, we must call `IMS.startIMS()`  on line 59 to start the SDK.
+Next, we must call `IMS.setUserManagerUrl()`  on line 65 to set the appropriate usermanager URL.
+Next, we should call `IMS.getThisDevice().setDeviceId(UUID.randomUUID().toString())` on line 68 to set a unique "device ID" for this particular account association; this ensures unique push notifications from the GMI server for this account.
+Next, we must call `IMS.acquireOAuthCredentials()`  on line 70 to actually acquire credentials to access the GMI server
 
 5)  The User ID or email address you entered should be displayed in the `Email / UserID` field.  If needed, you may edit it here.  Your changes will not persist.
 
-6)  Tap the `CHECK AND SET EMAIL / USERID` button to check with the server if this user is valid, and if so set the SDK's current user for future operations.  Wait for the dialog to confirm success.   
-This button event is handled in `MainActivity.kt` line 96.
-To check if a user ID or email exists on the server, we call `IMS.getPersonWithUserId()` on line 102 and see if it returns `null` or a valid `IMSPerson` object.  
-If `null` is returned, the user does not exist on the server.
+6)  Tap the `REGISTER AND SET EMAIL / USERID` button to attempt to register (associate the current device with the current user ID on the GMI server) / check with the server if this user is valid,
+and if so set the SDK's current user for future operations.  Wait for the dialog to confirm success, then you should have an email waiting for you.
+This button event is handled in `MainActivity.kt` line 91.
+If an IMSServerException is thrown, one of the following conditions is true:
+    a) Email does not exist on this server
+    b) No unverified PINs remain for this account on this device ID
+    c) The GMI SDK is not properly initialized
 
-7)  Tap the `REGISTER DEVICE TO USER` button to associate the current device with the current user ID on the GMI server.  Wait for the dialog to confirm success and read it carefully.  
-This button event is handled in `MainActivity.kt` line 135.
-To register a device to a user, we call `IMS.registerDeviceWithUserId()` on line 141 to tell the server to initiate the 2nd factor authentication process.
-If an exception is thrown, an earlier step was probably missed.
+7)  Check your email for the PIN codes; choose one, each is tied to a specific tenant.  Enter the PIN code in the "PIN to validate" field.  Tap the "Validate PIN" button.  Wait for the dialog to confirm success
+and to see which tenant you now have set up (only one tenant at a time can be tested with this sample app with the simple sample app logic, it only keeps track of one user / tenant)
+This button event is handled in `MainActivity.kt` line 115.
 
-8)  Perform your 2nd factor authentication, which may be either Email or Tenant.  If Email, click the link in the email you received.  
-If Tenant, you can copy the `Device ID` value from your Android `logcat` log output - search for the `REGISTER` tag to find it.  
-Once copied, paste this value into the `DEVICE_ID_TO_2FA` field in either `performTenant2faValidation.sh` (for Mac or Linux) or the `performTenant2faValidation.ps1` (for Windows 10 Powershell).
-Ensure the script you are about to use also has the appropriate GMI configuration information entered in place of `PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION` 
-Run the script and follow the directions to perform your 2nd factor authentication.
-
-9)  Tap the `GET PERSON TENANT DATA` button to retrieve the user's tenant information.  Wait for the dialog to confirm success.
-This button event is handled in `MainActivity.kt` line 165.
-To get the person's detailed tenant data, we call `IMS.getPersonTenantData()` on line 170 - this should include things like available `captureTypes` and `captureAlgorithms` and make the SDK aware of this information.
-
-10) Tap the `COUNT PENDING ENROLLMENTS` button to count pending enrollments.  Wait for the dialog to confirm success and display count.
-This button event is handled in `MainActivity.kt` line 195.
+8) Tap the `COUNT PENDING ENROLLMENTS` button to count pending enrollments.  Wait for the dialog to confirm success and display count.
+This button event is handled in `MainActivity.kt` line 139.
 To count pending enrollments, we call `IMS.getPendingEnrollmentInfos()` to get a quick list of enrollments pending on line 200.  
 
-11) Tap the `PERFORM PENDING ENROLLMENTS` button to perform pending enrollments; the app will retrieve the list of them and then iterate through them one at a time and allow you to enroll.  
-Wait for the dialog at the end to confirm successes.  This button event is handled in `MainActivity.kt` line 231.
-To get a detailed list of pending enrollments suitable to directly pass to the SDK for processing, we call `IMS.getPendingEnrollments()` on line 236.
-Then, we iterate through this list and call `IMS.nativeEnroll()` as demonstrated on line 245.
+9) Tap the `PERFORM PENDING ENROLLMENTS` button to perform pending enrollments; the app will retrieve the list of them and then iterate through them one at a time and allow you to enroll.
+Wait for the dialog at the end to confirm successes.  This button event is handled in `MainActivity.kt` line 171.
+To get a detailed list of pending enrollments suitable to directly pass to the SDK for processing, we call `IMS.getPendingEnrollments()` on line 176.
+Then, we iterate through this list and call `IMS.nativeEnroll()` as demonstrated on line 185.
 
-12) Tap the `COUNT PENDING ALERTS` button to count pending alerts.  Wait for the dialog to confirm success and display count.
-This button event is handled in `MainActivity.kt` line 277.
-To count pending alerts, we call `IMS.getMessagesForPerson()` on line 282.
+10) Tap the `COUNT PENDING ALERTS` button to count pending alerts.  Wait for the dialog to confirm success and display count.
+This button event is handled in `MainActivity.kt` line 217.
+To count pending alerts, we call `IMS.getMessagesForPerson()` on line 222.
 
-13) Tap the `PERFORM PENDING ALERTS` button to perform pending alerts; the app will retrieve the list of them and then iterate through them one at a time and allow you to perform verifications.  
-Wait for the dialog at the end to confirm successes.  This button event is handled in `MainActivity.kt` line 308.
-To get a detailed list of pending alerts suitable to directly pass to the SDK for processing, we again call `IMS.getMessagesForPerson()` on line 313.
-Then, we iterate through this list and call `IMS.renderMessage()` as demonstrated on line 365.
-The `launchAndWaitForNativeMessage()` method on line 357 wraps up the required logic necessary to properly resume from a coroutine from a completed alert. 
-
-
-
+11) Tap the `PERFORM PENDING ALERTS` button to perform pending alerts; the app will retrieve the list of them and then iterate through them one at a time and allow you to perform verifications.
+Wait for the dialog at the end to confirm successes.  This button event is handled in `MainActivity.kt` line 248.
+To get a detailed list of pending alerts suitable to directly pass to the SDK for processing, we again call `IMS.getMessagesForPerson()` on line 253.
+Then, we iterate through this list and call `IMS.renderMessage()` as demonstrated on line 311 (after an `IMS.pullMessage() call to fill out the rest of the required info, on line 306).
+The `launchAndWaitForNativeMessage()` method on line 303 wraps up the required logic necessary to properly resume from a coroutine from a completed alert.
 
 
 
