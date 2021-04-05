@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.01:
+    https://imageware.atlassian.net/browse/MOBK-529 - TPAD v2 API updates
+    Updated GMI SDK to 8.0.9
+
 ## 1.12:
     https://imageware.atlassian.net/browse/MOBK-370 - GMI SDK updated which now returns null IMSPerson object instead of IMSServerException when getPerson 404s
     Updated GMI SDK to 8.0.1
