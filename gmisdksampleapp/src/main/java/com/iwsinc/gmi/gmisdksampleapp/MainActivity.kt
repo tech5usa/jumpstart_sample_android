@@ -11,8 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.GsonBuilder
-import com.iwsinc.ims.api.*
-import com.iwsinc.ims.response.IMSResponse
+import com.iwsinc.gmi.iwsgmisampleapp.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,6 +28,7 @@ const val GMI_APPLICATION_CODE = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
 const val EMAIL_ADDRESS_USER_ID = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
 
 class MainActivity : AppCompatActivity() {
+
 
     private var validationResponse: ValidationResponse? = null
 
