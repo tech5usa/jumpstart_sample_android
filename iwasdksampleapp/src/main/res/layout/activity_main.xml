@@ -29,7 +29,7 @@
                 android:hint="GMI Server URL">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edit_text_gmi_server_url"
+                    android:id="@+id/edit_text_iwa_server_url"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -40,7 +40,7 @@
                 android:hint="GMI UserManager URL">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edit_text_gmi_user_manager_url"
+                    android:id="@+id/edit_text_iwa_user_manager_url"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -51,7 +51,7 @@
                 android:hint="GMI Client ID">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edit_text_gmi_client_id"
+                    android:id="@+id/edit_text_iwa_client_id"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -62,7 +62,7 @@
                 android:hint="GMI Client Secret">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edit_text_gmi_client_secret"
+                    android:id="@+id/edit_text_iwa_client_secret"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -73,18 +73,18 @@
                 android:hint="GMI Application Code">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edit_text_gmi_application_code"
+                    android:id="@+id/edit_text_iwa_application_code"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_init_gmi_sdk"
+                android:id="@+id/button_init_sdk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:focusable="true"
-                android:text="Initialize GMI SDK" />
+                android:text="Initialize IWA SDK" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"

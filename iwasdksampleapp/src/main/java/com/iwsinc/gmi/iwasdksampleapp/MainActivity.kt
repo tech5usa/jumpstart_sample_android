@@ -34,11 +34,11 @@ class MainActivity : AppCompatActivity() {
 
         //----------------------------
         //Populate the text fields with the GMI const vals above if they have been changed:
-        if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != IWA_SERVER_URL) edit_text_gmi_server_url.setText(IWA_SERVER_URL)
-        if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != IWA_USER_MANAGER_URL) edit_text_gmi_user_manager_url.setText(IWA_USER_MANAGER_URL)
-        if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != IWA_CLIENT_ID) edit_text_gmi_client_id.setText(IWA_CLIENT_ID)
-        if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != IWA_CLIENT_SECRET) edit_text_gmi_client_secret.setText(IWA_CLIENT_SECRET)
-        if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != IWA_APPLICATION_CODE) edit_text_gmi_application_code.setText(IWA_APPLICATION_CODE)
+        if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != IWA_SERVER_URL) edit_text_iwa_server_url.setText(IWA_SERVER_URL)
+        if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != IWA_USER_MANAGER_URL) edit_text_iwa_user_manager_url.setText(IWA_USER_MANAGER_URL)
+        if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != IWA_CLIENT_ID) edit_text_iwa_client_id.setText(IWA_CLIENT_ID)
+        if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != IWA_CLIENT_SECRET) edit_text_iwa_client_secret.setText(IWA_CLIENT_SECRET)
+        if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != IWA_APPLICATION_CODE) edit_text_iwa_application_code.setText(IWA_APPLICATION_CODE)
         if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != EMAIL_ADDRESS_USER_ID) edit_text_email.setText(EMAIL_ADDRESS_USER_ID)
 
         //----------------------------------------------------------------------------------------------------------
@@ -47,25 +47,25 @@ class MainActivity : AppCompatActivity() {
 
         //----------------------------
         //BUTTON: INITIALIZE IWA SDK
-        button_init_gmi_sdk.setOnClickListener {
+        button_init_sdk.setOnClickListener {
             Log.d("INIT_SDK", "button_init_gmi_sdk clicked, Initializing SDK with provided parameters in background coroutine...")
             showBusySpinner(true)
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     IMS.startIMS(
                         this@MainActivity,
-                        edit_text_gmi_server_url.extractText(),
+                        edit_text_iwa_server_url.extractText(),
                         "ImageWare",    //tenantcode during initialization is irrelevant, default is ImageWare
-                        edit_text_gmi_application_code.extractText()
+                        edit_text_iwa_application_code.extractText()
                     )
-                    IMS.setUserManagerUrl(edit_text_gmi_user_manager_url.extractText())
+                    IMS.setUserManagerUrl(edit_text_iwa_user_manager_url.extractText())
 
                     //It is recommended to set a unique "Device ID" for each user, otherwise the actual Android device ID will be used:
                     IMS.getThisDevice().setDeviceId(UUID.randomUUID().toString())
 
                     IMS.acquireOAuthCredentials(
-                        edit_text_gmi_client_id.extractText(),
-                        edit_text_gmi_client_secret.extractText()
+                        edit_text_iwa_client_id.extractText(),
+                        edit_text_iwa_client_secret.extractText()
                     )
                     showGmiDialog(
                         "SDK successfully initialized with provided parameters!",
@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
             showBusySpinner(true)
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    IMS.registerDeviceWithUserId(edit_text_email.extractText(), edit_text_gmi_application_code.extractText(), BuildConfig.VERSION_NAME)
+                    IMS.registerDeviceWithUserId(edit_text_email.extractText(), edit_text_iwa_application_code.extractText(), BuildConfig.VERSION_NAME)
                     showGmiDialog(
                             "Provided user ID / email address is valid, exists on the current GMI server, registration request received; check email for validation codes.",
                             "REGISTER"
