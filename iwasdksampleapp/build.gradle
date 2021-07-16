@@ -43,7 +43,7 @@ dependencies {
 
     //---------------------------------------------------------------------------------
     //Required for GMI SDK
-    implementation (group: 'com.iwsinc.ims', name: 'android_iwa_sdk', version: '9.1.0')
+    implementation (group: 'com.iwsinc.iwa', name: 'android_iwa_sdk', version: '9.1.0')
 
 
     //------------------------------------------------------------------------------------
