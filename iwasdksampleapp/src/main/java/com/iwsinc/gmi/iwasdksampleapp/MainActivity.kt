@@ -1,7 +1,6 @@
-package com.iwsinc.gmi.gmisdksampleapp
+package com.iwsinc.gmi.iwasdksampleapp
 
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log

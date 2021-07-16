@@ -1,4 +1,4 @@
-package com.iwsinc.gmi.gmisdksampleapp
+package com.iwsinc.gmi.iwasdksampleapp
 
 import org.junit.Test
 
