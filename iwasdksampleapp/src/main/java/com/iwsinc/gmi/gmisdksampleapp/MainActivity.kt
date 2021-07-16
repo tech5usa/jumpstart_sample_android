@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.GsonBuilder
+import com.iwsinc.gmi.gmi_sdk.net.response.ValidationResponse
 import com.iwsinc.gmi.iwsgmisampleapp.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +29,6 @@ const val GMI_APPLICATION_CODE = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
 const val EMAIL_ADDRESS_USER_ID = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
 
 class MainActivity : AppCompatActivity() {
-
 
     private var validationResponse: ValidationResponse? = null
 
@@ -110,6 +110,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+/*
         //----------------------------
         //BUTTON: VALIDATE PIN
         button_validate_pin.setOnClickListener {
@@ -284,6 +285,7 @@ class MainActivity : AppCompatActivity() {
                 showBusySpinner(false)
             }
         }
+*/
 
     }
 
@@ -294,6 +296,7 @@ class MainActivity : AppCompatActivity() {
     //------------------------------------------------------------------------------------
     //Utility functions to keep the above code clean and readable
 
+/*
     private fun generateImsPerson(): IMSPerson {
         val imsPerson = IMSPerson(validationResponse!!.personUuid, IMS.getServer())
         imsPerson.userId = edit_text_email.extractText()
@@ -318,6 +321,7 @@ class MainActivity : AppCompatActivity() {
         Log.i("LAUNCH",".launchAndWaitForNativeMessage() execution returned from IMS.renderMessage, released permit.")
         return listener.lastResponse
     }
+*/
 
 
     private fun showBusySpinner(showSpinner: Boolean = true) {
@@ -358,8 +362,8 @@ class MainActivity : AppCompatActivity() {
     //------------------------------------------------------------------------
     //Kotin extensions functions
 
-    fun IMSMessageInfo.pullMessage(imsPerson: IMSPerson): IMSMessage? =
-        IMS.pullMessage(this, imsPerson, validationResponse!!.tenantCode, edit_text_gmi_application_code.extractText())
+/*    fun IMSMessageInfo.pullMessage(imsPerson: IMSPerson): IMSMessage? =
+        IMS.pullMessage(this, imsPerson, validationResponse!!.tenantCode, edit_text_gmi_application_code.extractText())*/
 
     private fun TextInputEditText.extractText() = text.toString()
 
