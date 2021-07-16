@@ -10,9 +10,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.GsonBuilder
+import com.iwsinc.gmi.iwsgmisampleapp.BuildConfig
 import com.iwsinc.gmi.iwsgmisampleapp.R
+import com.iwsinc.iwa.iwa_sdk.api.AccountServiceManager
+import com.iwsinc.iwa.iwa_sdk.api.MessagesServiceManager
+import com.iwsinc.iwa.iwa_sdk.api.RegistrationStatus
+import com.iwsinc.iwa.iwa_sdk.api.listeners.InteractionManagerListener
+import com.iwsinc.iwa.iwa_sdk.api.model.Configuration
+import com.iwsinc.iwa.iwa_sdk.api.model.IwaError
+import com.iwsinc.iwa.iwa_sdk.api.model.IwaResult
+import com.iwsinc.iwa.iwa_sdk.api.model.Profile
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.util.*
@@ -26,7 +36,12 @@ const val IWA_CLIENT_SECRET = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
 const val IWA_APPLICATION_CODE = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
 const val EMAIL_ADDRESS_USER_ID = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), InteractionManagerListener {
+
+    private lateinit var accountServiceManager: AccountServiceManager
+    private lateinit var messagesServiceManager: MessagesServiceManager
+
+    private lateinit var profile: Profile
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,22 +63,13 @@ class MainActivity : AppCompatActivity() {
         //----------------------------
         //BUTTON: INITIALIZE IWA SDK
         button_init_sdk.setOnClickListener {
-            Log.d("INIT_SDK", "button_init_gmi_sdk clicked, Initializing SDK with provided parameters in background coroutine...")
-            showBusySpinner(true)
-            lifecycleScope.launch(Dispatchers.IO) {
-                try {
-                    IMS.startIMS(
-                        this@MainActivity,
-                        edit_text_iwa_server_url.extractText(),
-                        "ImageWare",    //tenantcode during initialization is irrelevant, default is ImageWare
-                        edit_text_iwa_application_code.extractText()
-                    )
-                    IMS.setUserManagerUrl(edit_text_iwa_user_manager_url.extractText())
+            Log.d("INIT_SDK", "button_init_gmi_sdk clicked, Initializing SDK...")
 
-                    //It is recommended to set a unique "Device ID" for each user, otherwise the actual Android device ID will be used:
-                    IMS.getThisDevice().setDeviceId(UUID.randomUUID().toString())
+            accountServiceManager = AccountServiceManager(this)
+            messagesServiceManager = MessagesServiceManager(this)
+            messagesServiceManager.register(this, this)
 
-                    IMS.acquireOAuthCredentials(
+/*                    IMS.acquireOAuthCredentials(
                         edit_text_iwa_client_id.extractText(),
                         edit_text_iwa_client_secret.extractText()
                     )
@@ -78,8 +84,13 @@ class MainActivity : AppCompatActivity() {
                         e
                     )
                 }
-                showBusySpinner(false)
-            }
+
+                                        this@MainActivity,
+                        edit_text_iwa_server_url.extractText(),
+                        "ImageWare",    //tenantcode during initialization is irrelevant, default is ImageWare
+                        edit_text_iwa_application_code.extractText()
+                showBusySpinner(false)*/
+
         }
 
         //----------------------------
@@ -89,18 +100,20 @@ class MainActivity : AppCompatActivity() {
             showBusySpinner(true)
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    IMS.registerDeviceWithUserId(edit_text_email.extractText(), edit_text_iwa_application_code.extractText(), BuildConfig.VERSION_NAME)
-                    showGmiDialog(
-                            "Provided user ID / email address is valid, exists on the current GMI server, registration request received; check email for validation codes.",
-                            "REGISTER"
+                    profile = Profile(
+                        edit_text_email.extractText(),
+                        Configuration(
+                            "MyIwaServer",
+                            edit_text_iwa_server_url.extractText(),
+                            edit_text_iwa_user_manager_url.extractText(),
+                            edit_text_iwa_client_id.extractText(),
+                            edit_text_iwa_client_secret.extractText(),
+                            edit_text_iwa_application_code.extractText()
+                        )
                     )
+                    accountServiceManager.register(profile, edit_text_iwa_application_code.extractText(), BuildConfig.VERSION_NAME).collect { handleRegistrationIwaResult(it) }
                 } catch (e: IOException) {
                     e.printStackTrace()
-                } catch (e: IMSServerException) {
-                    showGmiDialog(
-                            "Provided user ID / email address is not available on the current GMI server, initialization not completed, or registration / validation already completed!",
-                            "REGISTER"
-                    )
                 }
                 showBusySpinner(false)
             }
@@ -319,6 +332,43 @@ class MainActivity : AppCompatActivity() {
     }
 */
 
+    private fun handleRegistrationIwaResult(it: IwaResult<RegistrationStatus>) {
+        when (it) {
+            is IwaResult.Success -> {
+                when (it.data) {
+                    RegistrationStatus.PENDING_VERIFICATION -> {
+                        showGmiDialog(
+                            "Provided user ID / email address is valid, exists on the current GMI server, registration request received; check email for validation codes.",
+                            "REGISTER"
+                        )
+                    }
+                    RegistrationStatus.USER_VERIFIED -> {
+                        showGmiDialog(
+                            "Provided user ID / email address is valid, exists on the current GMI server, registration request invalid; already validated all codes.",
+                            "REGISTER"
+                        )
+                    }
+                }
+            }
+            is IwaResult.Error -> {
+                when (it.error) {
+                    IwaError.USER_NOT_FOUND -> {
+                        showGmiDialog(
+                            "Provided user ID / email address not found on provided server.",
+                            "REGISTER"
+                        )
+                    }
+                    else -> {
+                        showGmiDialog(
+                            "Server error.",
+                            "REGISTER"
+                        )
+                    }
+                }
+            }
+        }
+    }
+
 
     private fun showBusySpinner(showSpinner: Boolean = true) {
         lifecycleScope.launch(Dispatchers.Main) {
@@ -354,6 +404,45 @@ class MainActivity : AppCompatActivity() {
             dialog?.show()
         }
     }
+
+    //------------------------------------------------------------------------------------
+    //InteractionManagerListener overrides
+
+    override fun onAlertAccepted() {
+        showGmiDialog(
+            "Alert accepted",
+            "RESULT"
+        )
+    }
+
+    override fun onAlertCompleted() {
+        showGmiDialog(
+            "Alert completed",
+            "RESULT"
+        )
+    }
+
+    override fun onAlertRejected() {
+        showGmiDialog(
+            "Alert rejected",
+            "RESULT"
+        )
+    }
+
+    override fun onEnrollmentCompleted() {
+        showGmiDialog(
+            "Enroll completed",
+            "RESULT"
+        )
+    }
+
+    override fun onEnrollmentHidden() {
+        showGmiDialog(
+            "Enroll hidden",
+            "RESULT"
+        )
+    }
+
 
     //------------------------------------------------------------------------
     //Kotin extensions functions
