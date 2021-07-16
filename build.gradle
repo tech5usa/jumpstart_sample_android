@@ -3,13 +3,13 @@
 buildscript {
     apply from: 'aws.gradle'
 
-    ext.kotlin_version = "1.4.10"
+    ext.kotlin_version = "1.5.10"
     repositories {
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
+        classpath 'com.android.tools.build:gradle:4.2.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -26,6 +26,15 @@ allprojects {
             credentials(AwsCredentials) {
                 accessKey = System.env.AWS_ACCESS_KEY_ID ?: rootProject.ext.aws_access_key_id
                 secretKey = System.env.AWS_SECRET_ACCESS_KEY ?: rootProject.ext.aws_secret_access_key
+            }
+        }
+
+        //DO NOT CHECK IN
+        maven {
+            url = 's3://gmi-sdks/snapshots'
+            credentials(AwsCredentials) {
+                accessKey = System.env.AWS_ACCESS_KEY_ID ?: findProperty('aws_access_key_id')
+                secretKey = System.env.AWS_SECRET_ACCESS_KEY ?: findProperty('aws_secret_access_key')
             }
         }
     }
