@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.GsonBuilder
-import com.iwsinc.gmi.gmi_sdk.net.response.ValidationResponse
 import com.iwsinc.gmi.iwsgmisampleapp.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
@@ -20,16 +19,14 @@ import java.util.*
 
 
 //If the below constants are filled out with valid information, it will appear when the app launches:
-const val GMI_SERVER_URL = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
-const val GMI_USER_MANAGER_URL = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
-const val GMI_CLIENT_ID = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
-const val GMI_CLIENT_SECRET = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
-const val GMI_APPLICATION_CODE = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
+const val IWA_SERVER_URL = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
+const val IWA_USER_MANAGER_URL = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
+const val IWA_CLIENT_ID = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
+const val IWA_CLIENT_SECRET = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
+const val IWA_APPLICATION_CODE = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
 const val EMAIL_ADDRESS_USER_ID = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"
 
 class MainActivity : AppCompatActivity() {
-
-    private var validationResponse: ValidationResponse? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,11 +34,11 @@ class MainActivity : AppCompatActivity() {
 
         //----------------------------
         //Populate the text fields with the GMI const vals above if they have been changed:
-        if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != GMI_SERVER_URL) edit_text_gmi_server_url.setText(GMI_SERVER_URL)
-        if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != GMI_USER_MANAGER_URL) edit_text_gmi_user_manager_url.setText(GMI_USER_MANAGER_URL)
-        if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != GMI_CLIENT_ID) edit_text_gmi_client_id.setText(GMI_CLIENT_ID)
-        if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != GMI_CLIENT_SECRET) edit_text_gmi_client_secret.setText(GMI_CLIENT_SECRET)
-        if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != GMI_APPLICATION_CODE) edit_text_gmi_application_code.setText(GMI_APPLICATION_CODE)
+        if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != IWA_SERVER_URL) edit_text_gmi_server_url.setText(IWA_SERVER_URL)
+        if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != IWA_USER_MANAGER_URL) edit_text_gmi_user_manager_url.setText(IWA_USER_MANAGER_URL)
+        if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != IWA_CLIENT_ID) edit_text_gmi_client_id.setText(IWA_CLIENT_ID)
+        if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != IWA_CLIENT_SECRET) edit_text_gmi_client_secret.setText(IWA_CLIENT_SECRET)
+        if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != IWA_APPLICATION_CODE) edit_text_gmi_application_code.setText(IWA_APPLICATION_CODE)
         if ("PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION" != EMAIL_ADDRESS_USER_ID) edit_text_email.setText(EMAIL_ADDRESS_USER_ID)
 
         //----------------------------------------------------------------------------------------------------------
@@ -49,7 +46,7 @@ class MainActivity : AppCompatActivity() {
 
 
         //----------------------------
-        //BUTTON: INITIALIZE GMI SDK
+        //BUTTON: INITIALIZE IWA SDK
         button_init_gmi_sdk.setOnClickListener {
             Log.d("INIT_SDK", "button_init_gmi_sdk clicked, Initializing SDK with provided parameters in background coroutine...")
             showBusySpinner(true)
