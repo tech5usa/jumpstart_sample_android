@@ -64,33 +64,9 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
         //BUTTON: INITIALIZE IWA SDK
         button_init_sdk.setOnClickListener {
             Log.d("INIT_SDK", "button_init_gmi_sdk clicked, Initializing SDK...")
-
             accountServiceManager = AccountServiceManager(this)
             messagesServiceManager = MessagesServiceManager(this)
             messagesServiceManager.register(this, this)
-
-/*                    IMS.acquireOAuthCredentials(
-                        edit_text_iwa_client_id.extractText(),
-                        edit_text_iwa_client_secret.extractText()
-                    )
-                    showGmiDialog(
-                        "SDK successfully initialized with provided parameters!",
-                        "INIT_SDK"
-                    )
-                } catch (e: Exception) {
-                    showGmiDialog(
-                        "Initialization of GMI SDK failed, exception was ${e.localizedMessage}",
-                        "INIT_SDK",
-                        e
-                    )
-                }
-
-                                        this@MainActivity,
-                        edit_text_iwa_server_url.extractText(),
-                        "ImageWare",    //tenantcode during initialization is irrelevant, default is ImageWare
-                        edit_text_iwa_application_code.extractText()
-                showBusySpinner(false)*/
-
         }
 
         //----------------------------
@@ -115,11 +91,10 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
-                showBusySpinner(false)
             }
         }
 
-/*
+
         //----------------------------
         //BUTTON: VALIDATE PIN
         button_validate_pin.setOnClickListener {
@@ -127,42 +102,39 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
             showBusySpinner()
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    validationResponse = IMS.validatePin(edit_text_email.extractText(), edit_text_pin_validate.extractText())
-                    showGmiDialog(
-                            "ValidationResponse retrieved: ${validationResponse?.objectToString()}",
-                            "PIN_VALIDATE"
-                    )
+                    accountServiceManager.validate(profile, edit_text_email.extractText()).collect(::handleValidationIwaResult)
                 } catch (e: IOException) {
                     e.printStackTrace()
-                } catch (e: IMSServerException) {
-                    showGmiDialog(
-                            "Exception validating PIN: ${e.localizedMessage}",
-                            "PIN_VALIDATE"
-                    )
                 }
-                showBusySpinner(false)
             }
         }
 
         //----------------------------
-        //BUTTON: COUNT PENDING ENROLLMENTS
+        //BUTTON: UPDATE PUSH TOKEN
+        button_update_push.setOnClickListener {
+            Log.d("UPDATE_PUSH", "button_update_push clicked, attempting update push token on server...")
+            showBusySpinner()
+            lifecycleScope.launch(Dispatchers.IO) {
+                try {
+                    accountServiceManager.updatePush(profile, edit_text_push_token.extractText(), BuildConfig.VERSION_NAME).collect(::handleUpdatePushIwaResult)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+        }
+
+
+        //----------------------------
+        //BUTTON: COUNT PENDING ENROLLMENTS AND ALERTS
         button_count_pending_enrolls.setOnClickListener {
             Log.d("COUNT_ENROLL", "button_count_pending_enrolls clicked, counting pending enrolls for current user in background coroutine...")
             showBusySpinner()
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    var pendingEnrollments = IMS.getPendingEnrollmentInfos(generateImsPerson(), validationResponse!!.tenantCode, edit_text_gmi_application_code.extractText())
-                    if (pendingEnrollments == null || pendingEnrollments.isEmpty()) {
-                        showGmiDialog(
-                            "No pending enrollments for the current user!",
-                            "COUNT_ENROLL"
-                        )
-                    } else {
-                        showGmiDialog(
-                            "Counted ${pendingEnrollments.size} pending enrollments for the current user!",
-                            "COUNT_ENROLL"
-                        )
-                    }
+                    showGmiDialog(
+                        "Profile ${profile.email} on ${profile.configuration?.gmiServerUrl} currently has ${messagesServiceManager.getActiveEnrollmentsCountCo()} pending enrolls and ${messagesServiceManager.getActiveAlertsCountCo()} unread alerts.",
+                        "COUNT_ENROLL"
+                    )
                 } catch (e: Exception) {
                     showGmiDialog(
                         "Must perform a previous step first!  Count of pending enrollments for current user failed, exception was ${e.localizedMessage}",
@@ -176,50 +148,6 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
 
 
 
-        //----------------------------
-        //BUTTON: PERFORM PENDING ENROLLMENTS
-        button_perform_pending_enrolls.setOnClickListener {
-            Log.d("ENROLL", "button_perform_pending_enrolls clicked, performing pending enrolls for current user...")
-            showBusySpinner()
-            lifecycleScope.launch(Dispatchers.IO) {
-                try {
-                    var pendingEnrollments = IMS.getPendingEnrollments(generateImsPerson(), validationResponse!!.tenantCode, edit_text_gmi_application_code.extractText())
-                    if (pendingEnrollments == null || pendingEnrollments.isEmpty()) {
-                        showGmiDialog(
-                            "No pending enrollments for the current user!",
-                            "ENROLL"
-                        )
-                    } else {
-                        var resultStringBuilder = StringBuilder()
-                        for (enrollment in pendingEnrollments) {
-                            val response: IMS.EnrollResponse? = IMS.nativeEnroll(
-                                this@MainActivity,
-                                enrollment
-                            )
-                            resultStringBuilder.append("${enrollment.enrollInfo.captureType} success: ${response?.success()}\n")
-                            Log.i("ENROLL", "enrollment result for ${enrollment.enrollInfo.captureType}: success: ${response?.success()} - ${response?.objectToString()}")
-                        }
-
-                        showGmiDialog(
-                            "Processed ${pendingEnrollments.size} enrollments.\n$resultStringBuilder\nFor more details, see the Android logcat output.",
-                            "ENROLL"
-                        )
-                    }
-                } catch (e: Exception) {
-                    showGmiDialog(
-                        "Must perform a previous step first!  Perform pending enrollments for current user failed, exception was ${e.localizedMessage}",
-                        "ENROLL",
-                        e
-                    )
-                }
-                showBusySpinner(false)
-            }
-        }
-
-
-
-
-
 
 
         //----------------------------
@@ -229,15 +157,10 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
             showBusySpinner()
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    var pendingAlerts = IMS.getMessagesForPerson(generateImsPerson(), validationResponse!!.tenantCode, edit_text_gmi_application_code.extractText())
-                    if (pendingAlerts == null || pendingAlerts.isEmpty()) {
-                        showGmiDialog("No pending alerts for the current user!", "COUNT_ALERTS")
-                    } else {
-                        showGmiDialog(
-                            "Counted ${pendingAlerts.size} pending alerts for the current user!",
-                            "COUNT_ALERTS"
-                        )
-                    }
+                    showGmiDialog(
+                        "Profile ${profile.email} on ${profile.configuration?.gmiServerUrl} currently has ${messagesServiceManager.getActiveAlertsCountCo()} unread alerts.",
+                        "COUNT_ALERTS"
+                    )
                 } catch (e: Exception) {
                     showGmiDialog(
                         "Must perform a previous step first!  Count of pending enrollments for current user failed, exception was ${e.localizedMessage}",
@@ -254,50 +177,101 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
 
 
         //----------------------------
-        //BUTTON: PERFORM PENDING ALERTS
-        button_perform_pending_alerts.setOnClickListener {
-            Log.d("ALERTS", "button_perform_pending_alerts clicked, performing pending alerts for current user...")
+        //BUTTON: button_perform_sync_and_render_next_work_item
+        button_sync.setOnClickListener {
+            Log.d("SYNC", "button_sync, synchronizing with server (downloading messages)...")
             showBusySpinner()
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    var pendingAlerts = IMS.getMessagesForPerson(generateImsPerson(), validationResponse!!.tenantCode, edit_text_gmi_application_code.extractText())
-                    if (pendingAlerts == null || pendingAlerts.isEmpty()) {
-                        showGmiDialog("No pending alerts for the current user!", "ALERTS")
-                    } else {
-                        var resultStringBuilder = StringBuilder()
-                        for (alert in pendingAlerts) {
-                            val response = launchAndWaitForNativeMessage(
-                                this@MainActivity,
-                                alert
-                            )
 
-                            if (response?.successfulVerificationEvent == true) {    //If successful, we must mark the alert as "read" on the server or it will remain pending
-                                IMS.markMessageAsRead(alert, validationResponse!!.tenantCode, validationResponse!!.personUuid, edit_text_gmi_application_code.extractText())
-                            }
-
-                            resultStringBuilder.append("${alert.template.substringAfterLast('/')} success: ${response?.successfulVerificationEvent}\n")
-                            Log.i("ALERTS", "${alert.enrollInfo.captureType} success: ${response?.successfulVerificationEvent} - ${response?.objectToString()}")
-                        }
-
+                    if (accountServiceManager.profiles.isEmpty()) {
                         showGmiDialog(
-                            "Processed ${pendingAlerts.size} alerts.\n$resultStringBuilder\nFor more details, see the Android logcat output.",
-                            "ALERTS"
+                            "Synchronization failed, no profiles detected!  Please re-register.",
+                            "SYNC"
+                        )
+                    } else {
+                        messagesServiceManager.synchronizeWorkItems()
+                        showGmiDialog(
+                            "Synchronization completed.",
+                            "SYNC"
                         )
                     }
                 } catch (e: Exception) {
                     showGmiDialog(
-                        "Must perform a previous step first!  Perform pending alerts for current user failed, exception was ${e.localizedMessage}",
-                        "ALERTS",
-                        e
+                        "Must perform a previous step first!  Sync failed, exception was ${e.localizedMessage}",
+                        "SYNC", e
                     )
                 }
                 showBusySpinner(false)
             }
         }
-*/
+
+
+        //----------------------------
+        //BUTTON: button_render_next_work_item
+        button_render_next_work_item.setOnClickListener {
+            Log.d("RENDER", "button_render_next_work_item, Rendering next work item if not hidden / not skipped...")
+            showBusySpinner()
+            lifecycleScope.launch(Dispatchers.IO) {
+                try {
+                    messagesServiceManager.renderNextWorkItemIfNeeded()
+                } catch (e: Exception) {
+                    showGmiDialog(
+                        "Must perform a previous step first!  Render failed, exception was ${e.localizedMessage}",
+                        "RENDER", e
+                    )
+                }
+                showBusySpinner(false)
+            }
+        }
+
+
+        //----------------------------
+        //BUTTON: button_set_work_items_unread
+        button_set_work_items_unread.setOnClickListener {
+            Log.d("SET_UNREAD", "button_set_work_items_unread clicked, setting work items unread...")
+            showBusySpinner()
+            lifecycleScope.launch(Dispatchers.IO) {
+                try {
+                    messagesServiceManager.setWorkItemsUnread()
+                    showGmiDialog(
+                        "Work items (alerts) set as UNREAD (unskipped).",
+                        "SET_UNREAD"
+                    )
+                } catch (e: Exception) {
+                    showGmiDialog(
+                        "Must perform a previous step first!  Work items not set as UNREAD, exception was ${e.localizedMessage}",
+                        "SET_UNREAD", e
+                    )
+                }
+                showBusySpinner(false)
+            }
+        }
+
+
+        //----------------------------
+        //BUTTON: button_unhide_all_enrolls
+        button_unhide_all_enrolls.setOnClickListener {
+            Log.d("UNHIDE", "button_unhide_all_enrolls clicked, unhiding all enrolls...")
+            showBusySpinner()
+            lifecycleScope.launch(Dispatchers.IO) {
+                try {
+                    messagesServiceManager.setWorkItemsUnread()
+                    showGmiDialog(
+                        "All enrollments unhidden and unskipped.",
+                        "UNHIDE"
+                    )
+                } catch (e: Exception) {
+                    showGmiDialog(
+                        "Must perform a previous step first!  Enrollments not unhidden, exception was ${e.localizedMessage}",
+                        "UNHIDE", e
+                    )
+                }
+                showBusySpinner(false)
+            }
+        }
 
     }
-
 
 
 
@@ -331,6 +305,50 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
         return listener.lastResponse
     }
 */
+
+    private fun handleUpdatePushIwaResult(it: IwaResult<Unit>) {
+        showBusySpinner(false)
+        return when (it) {
+            is IwaResult.Success -> showGmiDialog(
+                "Push updated successfully!",
+                "UPDATE_PUSH"
+            )
+            is IwaResult.Error -> showGmiDialog(
+                "Push not updated due to an error.",
+                "UPDATE_PUSH"
+            )
+        }
+    }
+
+    private fun handleValidationIwaResult(it: IwaResult<Profile>) {
+        when (it) {
+            is IwaResult.Success -> {
+                val profile = it.data
+                showGmiDialog(
+                    "PIN Validated for ${profile.email}, tenants are now ${profile.tenants}, person UUID is ${profile.id}",
+                    "VALIDATE"
+                )
+                this.profile = profile
+            }
+            is IwaResult.Error -> {
+                when (it.error) {
+                    IwaError.PIN_NOT_VALIDATED -> {
+                        showGmiDialog(
+                            "PIN not validated",
+                            "VALIDATE"
+                        )
+                    }
+                    else -> {
+                        showGmiDialog(
+                            "Server error",
+                            "VALIDATE"
+                        )
+                    }
+                }
+            }
+        }
+        showBusySpinner(false)
+    }
 
     private fun handleRegistrationIwaResult(it: IwaResult<RegistrationStatus>) {
         when (it) {
@@ -367,6 +385,7 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
                 }
             }
         }
+        showBusySpinner(false)
     }
 
 

@@ -9,6 +9,8 @@
 
 <!--  The scrollview containing the visible controls: -->
 
+
+    <!-- The invisible touch stealing overlay view and "busy" spinner layer to prevent users from tapping buttons while app is busy -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -122,19 +124,30 @@
                 android:layout_gravity="center"
                 android:text="Validate PIN" />
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Push token to register with IWA server">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edit_text_push_token"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/button_update_push"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Update push token on IWA server" />
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/button_count_pending_enrolls"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Count Pending Enrollments" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_perform_pending_enrolls"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Perform Pending Enrollments" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/button_count_pending_alerts"
@@ -144,20 +157,37 @@
                 android:text="Count Pending Alerts" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_perform_pending_alerts"
+                android:id="@+id/button_sync"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Perform Pending Alerts" />
+                android:text="Synchronize with Server" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/button_render_next_work_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Render Next Work Item" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/button_set_work_items_unread"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Set Work Items Unread" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/button_unhide_all_enrolls"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Unhide All Enrolls" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
     </ScrollView>
 
-
-
-
-<!-- The invisible touch stealing overlay view and "busy" spinner layer to prevent users from tapping buttons while app is busy -->
     <RelativeLayout
         android:id="@+id/touch_stealing_busy_overlay"
         android:clickable="true"
