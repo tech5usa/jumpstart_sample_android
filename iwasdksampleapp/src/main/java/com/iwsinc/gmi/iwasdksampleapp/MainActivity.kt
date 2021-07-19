@@ -127,14 +127,14 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
 
 
         //----------------------------
-        //BUTTON: COUNT PENDING ENROLLMENTS AND ALERTS
+        //BUTTON: COUNT PENDING ENROLLS
         button_count_pending_enrolls.setOnClickListener {
             Log.d("COUNT_ENROLL", "button_count_pending_enrolls clicked, counting pending enrolls for current user in background coroutine...")
             showBusySpinner()
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     showDialog(
-                        "Profile ${profile.email} on ${profile.configuration?.gmiServerUrl} currently has ${messagesServiceManager.getActiveEnrollmentsCountCo()} pending enrolls and ${messagesServiceManager.getActiveAlertsCountCo()} unread alerts.",
+                        "Profile ${profile.email} on ${profile.configuration?.gmiServerUrl} currently has ${messagesServiceManager.getActiveEnrollmentsCountCo()} pending enrolls.",
                         "COUNT_ENROLL"
                     )
                 } catch (e: Exception) {
