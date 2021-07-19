@@ -184,6 +184,12 @@
                 android:layout_gravity="center"
                 android:text="Unhide All Enrolls" />
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/button_unregister_first_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Unregister first account" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
     </ScrollView>

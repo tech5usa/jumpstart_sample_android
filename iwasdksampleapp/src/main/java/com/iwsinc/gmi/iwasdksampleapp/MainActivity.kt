@@ -273,6 +273,28 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
             }
         }
 
+        //BUTTON: button_unregister_first_account
+        button_unregister_first_account.setOnClickListener {
+            Log.d("UNREGISTER", "button_unregister_first_account clicked...")
+            showBusySpinner()
+            lifecycleScope.launch(Dispatchers.IO) {
+                try {
+                    accountServiceManager.remove(accountServiceManager.profiles.firstOrNull()!!)
+                    showDialog(
+                        "First profile removed / unregistered.",
+                        "UNREGISTER"
+                    )
+                } catch (e: Exception) {
+                    showDialog(
+                        "Must perform a previous step first!  Unregistration not completed, exception was ${e.localizedMessage}",
+                        "UNREGISTER", e
+                    )
+                }
+                showBusySpinner(false)
+            }
+        }
+
+
     }
 
 
