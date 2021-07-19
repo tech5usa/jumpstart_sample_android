@@ -1,4 +1,4 @@
-package com.example.iwsgmisampleapp
+package com.example.iwasdksampleapp
 
 import android.util.Log
 import com.iwsinc.ims.listeners.IMSResponseListener

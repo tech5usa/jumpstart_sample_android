@@ -1,4 +1,4 @@
-package com.example.iwsgmisampleapp
+package com.example.iwasdksampleapp
 
 import android.app.Dialog
 import android.content.Context
