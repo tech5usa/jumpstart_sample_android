@@ -61,10 +61,14 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
         //----------------------------
         //BUTTON: INITIALIZE IWA SDK
         button_init_sdk.setOnClickListener {
-            Log.d("INIT_SDK", "button_init_gmi_sdk clicked, Initializing SDK...")
+            Log.d("INIT_SDK", "button_init_iwa_sdk clicked, Initializing SDK...")
             accountServiceManager = AccountServiceManager(this)
             messagesServiceManager = MessagesServiceManager(this)
             messagesServiceManager.register(this, this)
+            showDialog(
+                "IWA SDK Initialization completed",
+                "INITIALIZE"
+            )
         }
 
         //----------------------------
@@ -129,12 +133,12 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
             showBusySpinner()
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    showGmiDialog(
+                    showDialog(
                         "Profile ${profile.email} on ${profile.configuration?.gmiServerUrl} currently has ${messagesServiceManager.getActiveEnrollmentsCountCo()} pending enrolls and ${messagesServiceManager.getActiveAlertsCountCo()} unread alerts.",
                         "COUNT_ENROLL"
                     )
                 } catch (e: Exception) {
-                    showGmiDialog(
+                    showDialog(
                         "Must perform a previous step first!  Count of pending enrollments for current user failed, exception was ${e.localizedMessage}",
                         "COUNT_ENROLL",
                         e
@@ -155,12 +159,12 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
             showBusySpinner()
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    showGmiDialog(
+                    showDialog(
                         "Profile ${profile.email} on ${profile.configuration?.gmiServerUrl} currently has ${messagesServiceManager.getActiveAlertsCountCo()} unread alerts.",
                         "COUNT_ALERTS"
                     )
                 } catch (e: Exception) {
-                    showGmiDialog(
+                    showDialog(
                         "Must perform a previous step first!  Count of pending enrollments for current user failed, exception was ${e.localizedMessage}",
                         "COUNT_ALERTS",
                         e
@@ -183,19 +187,19 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
                 try {
 
                     if (accountServiceManager.profiles.isEmpty()) {
-                        showGmiDialog(
+                        showDialog(
                             "Synchronization failed, no profiles detected!  Please re-register.",
                             "SYNC"
                         )
                     } else {
                         messagesServiceManager.synchronizeWorkItems()
-                        showGmiDialog(
+                        showDialog(
                             "Synchronization completed.",
                             "SYNC"
                         )
                     }
                 } catch (e: Exception) {
-                    showGmiDialog(
+                    showDialog(
                         "Must perform a previous step first!  Sync failed, exception was ${e.localizedMessage}",
                         "SYNC", e
                     )
@@ -214,7 +218,7 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
                 try {
                     messagesServiceManager.renderNextWorkItemIfNeeded()
                 } catch (e: Exception) {
-                    showGmiDialog(
+                    showDialog(
                         "Must perform a previous step first!  Render failed, exception was ${e.localizedMessage}",
                         "RENDER", e
                     )
@@ -232,12 +236,12 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     messagesServiceManager.setWorkItemsUnread()
-                    showGmiDialog(
+                    showDialog(
                         "Work items (alerts) set as UNREAD (unskipped).",
                         "SET_UNREAD"
                     )
                 } catch (e: Exception) {
-                    showGmiDialog(
+                    showDialog(
                         "Must perform a previous step first!  Work items not set as UNREAD, exception was ${e.localizedMessage}",
                         "SET_UNREAD", e
                     )
@@ -255,12 +259,12 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     messagesServiceManager.setWorkItemsUnread()
-                    showGmiDialog(
+                    showDialog(
                         "All enrollments unhidden and unskipped.",
                         "UNHIDE"
                     )
                 } catch (e: Exception) {
-                    showGmiDialog(
+                    showDialog(
                         "Must perform a previous step first!  Enrollments not unhidden, exception was ${e.localizedMessage}",
                         "UNHIDE", e
                     )
@@ -307,11 +311,11 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
     private fun handleUpdatePushIwaResult(it: IwaResult<Unit>) {
         showBusySpinner(false)
         return when (it) {
-            is IwaResult.Success -> showGmiDialog(
+            is IwaResult.Success -> showDialog(
                 "Push updated successfully!",
                 "UPDATE_PUSH"
             )
-            is IwaResult.Error -> showGmiDialog(
+            is IwaResult.Error -> showDialog(
                 "Push not updated due to an error.",
                 "UPDATE_PUSH"
             )
@@ -322,7 +326,7 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
         when (it) {
             is IwaResult.Success -> {
                 val profile = it.data
-                showGmiDialog(
+                showDialog(
                     "PIN Validated for ${profile.email}, tenants are now ${profile.tenants}, person UUID is ${profile.id}",
                     "VALIDATE"
                 )
@@ -331,13 +335,13 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
             is IwaResult.Error -> {
                 when (it.error) {
                     IwaError.PIN_NOT_VALIDATED -> {
-                        showGmiDialog(
+                        showDialog(
                             "PIN not validated",
                             "VALIDATE"
                         )
                     }
                     else -> {
-                        showGmiDialog(
+                        showDialog(
                             "Server error",
                             "VALIDATE"
                         )
@@ -353,13 +357,13 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
             is IwaResult.Success -> {
                 when (it.data) {
                     RegistrationStatus.PENDING_VERIFICATION -> {
-                        showGmiDialog(
+                        showDialog(
                             "Provided user ID / email address is valid, exists on the current GMI server, registration request received; check email for validation codes.",
                             "REGISTER"
                         )
                     }
                     RegistrationStatus.USER_VERIFIED -> {
-                        showGmiDialog(
+                        showDialog(
                             "Provided user ID / email address is valid, exists on the current GMI server, registration request invalid; already validated all codes.",
                             "REGISTER"
                         )
@@ -369,13 +373,13 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
             is IwaResult.Error -> {
                 when (it.error) {
                     IwaError.USER_NOT_FOUND -> {
-                        showGmiDialog(
+                        showDialog(
                             "Provided user ID / email address not found on provided server.",
                             "REGISTER"
                         )
                     }
                     else -> {
-                        showGmiDialog(
+                        showDialog(
                             "Server error.",
                             "REGISTER"
                         )
@@ -393,7 +397,7 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
         }
     }
 
-    private fun showGmiDialog(
+    private fun showDialog(
         message: String?,
         title: String? = null,
         exception: Exception? = null
@@ -426,35 +430,35 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
     //InteractionManagerListener overrides
 
     override fun onAlertAccepted() {
-        showGmiDialog(
+        showDialog(
             "Alert accepted",
             "RESULT"
         )
     }
 
     override fun onAlertCompleted() {
-        showGmiDialog(
+        showDialog(
             "Alert completed",
             "RESULT"
         )
     }
 
     override fun onAlertRejected() {
-        showGmiDialog(
+        showDialog(
             "Alert rejected",
             "RESULT"
         )
     }
 
     override fun onEnrollmentCompleted() {
-        showGmiDialog(
+        showDialog(
             "Enroll completed",
             "RESULT"
         )
     }
 
     override fun onEnrollmentHidden() {
-        showGmiDialog(
+        showDialog(
             "Enroll hidden",
             "RESULT"
         )
