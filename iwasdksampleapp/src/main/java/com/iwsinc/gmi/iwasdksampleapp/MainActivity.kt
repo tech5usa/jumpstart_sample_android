@@ -468,9 +468,6 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
     //------------------------------------------------------------------------
     //Kotin extensions functions
 
-/*    fun IMSMessageInfo.pullMessage(imsPerson: IMSPerson): IMSMessage? =
-        IMS.pullMessage(this, imsPerson, validationResponse!!.tenantCode, edit_text_gmi_application_code.extractText())*/
-
     private fun TextInputEditText.extractText() = text.toString()
 
     private fun Any.objectToString(): String? = GsonBuilder().create().toJson(this)
