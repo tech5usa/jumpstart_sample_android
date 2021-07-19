@@ -143,6 +143,13 @@
                 android:text="Update push token on IWA server" />
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/button_sync"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Synchronize with Server" />
+            
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/button_count_pending_enrolls"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -155,13 +162,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Count Pending Alerts" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button_sync"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Synchronize with Server" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/button_render_next_work_item"
