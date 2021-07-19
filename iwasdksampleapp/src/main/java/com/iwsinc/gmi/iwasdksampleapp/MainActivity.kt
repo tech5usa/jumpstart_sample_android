@@ -104,7 +104,7 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
             showBusySpinner()
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    accountServiceManager.validate(profile, edit_text_email.extractText()).collect(::handleValidationIwaResult)
+                    accountServiceManager.validate(accountServiceManager.profiles.firstOrNull()!!, edit_text_pin_validate.extractText()).collect(::handleValidationIwaResult)
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
