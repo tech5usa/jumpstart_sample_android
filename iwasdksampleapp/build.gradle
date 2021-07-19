@@ -37,14 +37,19 @@ android {
         installOptions '-t'
     }
 
+
+    //REQUIRED BY THE IWA SDK:
+    dataBinding {
+        enabled = true
+    }
 }
 
 dependencies {
 
     //---------------------------------------------------------------------------------
-    //Required for GMI SDK
     implementation (group: 'com.iwsinc.iwa', name: 'android_iwa_sdk', version: '9.1.0')
 
+    //REQUIRED BY THE IWA SDK:
 
     //------------------------------------------------------------------------------------
     //Unique to this sample app / not required for SDK:
