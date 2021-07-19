@@ -28,7 +28,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="GMI Server URL">
+                android:hint="IWA Server URL">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edit_text_iwa_server_url"
@@ -39,7 +39,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="GMI UserManager URL">
+                android:hint="IWA UserManager URL">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edit_text_iwa_user_manager_url"
@@ -50,7 +50,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="GMI Client ID">
+                android:hint="IWA Client ID">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edit_text_iwa_client_id"
@@ -61,7 +61,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="GMI Client Secret">
+                android:hint="IWA Client Secret">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edit_text_iwa_client_secret"
@@ -72,7 +72,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="GMI Application Code">
+                android:hint="IWA Application Code">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edit_text_iwa_application_code"
