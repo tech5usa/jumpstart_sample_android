@@ -9,7 +9,7 @@ android {
 //    ndkVersion "21.3.6528147"   //This is the version available in Github Actions' current ubuntu VM.  Update here if this changes for speedy builds instead of installing another NDK version in your workflow
 
     defaultConfig {
-        applicationId "com.iwsinc.gmi.gmisdksampleapp"
+        applicationId "com.iwsinc.gmi.iwasdksampleapp"
         minSdkVersion 22
         targetSdkVersion 30 //Android 11
         versionCode 300
