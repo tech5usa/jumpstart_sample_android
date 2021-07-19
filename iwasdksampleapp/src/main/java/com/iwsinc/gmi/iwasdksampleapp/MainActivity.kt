@@ -10,8 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.GsonBuilder
-import com.iwsinc.gmi.iwasdksampleapp.BuildConfig
-import com.iwsinc.gmi.iwasdksampleapp.R
 import com.iwsinc.iwa.iwa_sdk.api.AccountServiceManager
 import com.iwsinc.iwa.iwa_sdk.api.MessagesServiceManager
 import com.iwsinc.iwa.iwa_sdk.api.RegistrationStatus
