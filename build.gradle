@@ -28,15 +28,6 @@ allprojects {
                 secretKey = System.env.AWS_SECRET_ACCESS_KEY ?: findProperty('aws_secret_access_key')
             }
         }
-        
-        //DO NOT CHECK IN
-        maven {
-            url = 's3://gmi-sdks/snapshots'
-            credentials(AwsCredentials) {
-                accessKey = System.env.AWS_ACCESS_KEY_ID ?: findProperty('aws_access_key_id')
-                secretKey = System.env.AWS_SECRET_ACCESS_KEY ?: findProperty('aws_secret_access_key')
-            }
-        }
     }
 }
 
