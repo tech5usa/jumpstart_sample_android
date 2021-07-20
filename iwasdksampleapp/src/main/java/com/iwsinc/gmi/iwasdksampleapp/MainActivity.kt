@@ -179,7 +179,7 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
 
 
         //----------------------------
-        //BUTTON: button_perform_sync_and_render_next_work_item
+        //BUTTON: button_sync
         button_sync.setOnClickListener {
             Log.d("SYNC", "button_sync, synchronizing with server (downloading messages)...")
             showBusySpinner()
