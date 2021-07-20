@@ -134,7 +134,7 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     showDialog(
-                        "Profile ${profile.email} on ${profile.configuration?.gmiServerUrl} currently has ${messagesServiceManager.getActiveEnrollmentsCountCo()} pending enrolls.",
+                        "Profile ${profile.email} on ${profile.configuration.serverUrl} currently has ${messagesServiceManager.getActiveEnrollmentsCountCo()} pending enrolls.",
                         "COUNT_ENROLL"
                     )
                 } catch (e: Exception) {
@@ -160,7 +160,7 @@ class MainActivity : AppCompatActivity(), InteractionManagerListener {
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     showDialog(
-                        "Profile ${profile.email} on ${profile.configuration?.gmiServerUrl} currently has ${messagesServiceManager.getActiveAlertsCountCo()} unread alerts.",
+                        "Profile ${profile.email} on ${profile.configuration.serverUrl} currently has ${messagesServiceManager.getActiveAlertsCountCo()} unread alerts.",
                         "COUNT_ALERTS"
                     )
                 } catch (e: Exception) {
