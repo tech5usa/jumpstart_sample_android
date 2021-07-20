@@ -54,7 +54,7 @@ jobs:
         mkdir -p ${{ github.workspace }}/artifact
         cp -v performTenant2faValidation.* ${{ github.workspace }}/artifact/
         cp -v README.md ${{ github.workspace }}/artifact/
-        cp -v app/build/outputs/apk/debug/iwasdksampleapp-debug.apk ${{ github.workspace }}/artifact/iwa_sdk_sample_app.apk
+        cp -v iwasdksampleapp/build/outputs/apk/debug/iwasdksampleapp-debug.apk ${{ github.workspace }}/artifact/iwa_sdk_sample_app.apk
 
     - name: Upload Release artifact folder
       id: upload
