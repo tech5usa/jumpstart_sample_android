@@ -48,7 +48,7 @@ dependencies {
 
     //REQUIRED BY THE IWA SDK:
     //---------------------------------------------------------------------------------
-    implementation (group: 'com.iwsinc.iwa', name: 'android_iwa_sdk', version: '9.1.0')
+    implementation (group: 'com.iwsinc.iwa', name: 'android_iwa_sdk', version: '9.1.1alpha1050471378')
 
 
     //------------------------------------------------------------------------------------
