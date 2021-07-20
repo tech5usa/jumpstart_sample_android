@@ -1,3 +1,2 @@
 include ':iwasdksampleapp'
-//include ':app'
-rootProject.name = "IWS GMI Sample App"
+rootProject.name = "IWA SDK Sample App"
