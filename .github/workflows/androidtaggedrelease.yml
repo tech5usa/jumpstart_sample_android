@@ -60,13 +60,13 @@ jobs:
         mkdir -p ${{ github.workspace }}/artifact
         cp -v performTenant2faValidation.* ${{ github.workspace }}/artifact/
         cp -v README.md ${{ github.workspace }}/artifact/
-        cp -v app/build/outputs/apk/debug/app-debug.apk ${{ github.workspace }}/artifact/iws_gmi_sample_app.apk
+        cp -v iwasdksampleapp/build/outputs/apk/debug/iwasdksampleapp-debug.apk ${{ github.workspace }}/artifact/iwa_sdk_sample_app.apk
 
     - name: Upload Release artifact folder
       id: upload
       uses: actions/upload-artifact@v2
       with:
-        name: IWS_GMI_Sample_App_Package
+        name: IWA_SDK_Sample_App_Package
         path: ${{ github.workspace }}/artifact/**/*
 
     - name: Zip release artifacts for tagged release
@@ -101,9 +101,9 @@ jobs:
         SLACK_CHANNEL: android-dev-botfeed
         SLACK_COLOR: '#00FF99'
         SLACK_ICON: https://github.com/rtCamp.png?size=48
-        SLACK_TITLE: New GMI Sample App
+        SLACK_TITLE: New IWA SDK Sample App
         SLACK_MESSAGE: |
-          A new IWS GMI Sample App tagged release, <https://github.com/ImageWare/jumpstart_sample_android/releases/tag/${{ steps.tagName.outputs.tag }}|${{ steps.tagName.outputs.tag }}>, is available on Github Artifacts :rocket:
+          A new IWA SDK Sample App tagged release, <https://github.com/ImageWare/jumpstart_sample_android/releases/tag/${{ steps.tagName.outputs.tag }}|${{ steps.tagName.outputs.tag }}>, is available on Github Artifacts :rocket:
           <https://github.com/ImageWare/jumpstart_sample_android/releases/tag/${{ steps.tagName.outputs.tag }}|Source code ${{ steps.tagName.outputs.tag }} .ZIP for customers>
           <${{ steps.upload_release_asset.outputs.browser_download_url }}|Release ${{ steps.tagName.outputs.tag }} .ZIP> (compiled app for testing)
           <https://github.com/ImageWare/jumpstart_sample_android/actions/runs/${{ github.run_id }}|Build job and Artifacts>

@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.00:
+    https://imageware.atlassian.net/browse/MOBK-551 - Updated sample app to new simplified / unified SDK interface
+    Updated: Gradle Build System, Android Gradle Plugin, Kotlin, KotlinX Coroutines, Android Build Tools, AndroidX (Material, Lifecycle)
+    Updated IWA SDK to 9.1.1
+
 ## 2.01:
     https://imageware.atlassian.net/browse/MOBK-529 - TPAD v2 API updates
     Updated GMI SDK to 8.0.9

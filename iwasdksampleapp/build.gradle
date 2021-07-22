@@ -1,0 +1,59 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+//    ndkVersion "21.3.6528147"   //This is the version available in Github Actions' current ubuntu VM.  Update here if this changes for speedy builds instead of installing another NDK version in your workflow
+
+    defaultConfig {
+        applicationId "com.iwsinc.gmi.iwasdksampleapp"
+        minSdkVersion 22
+        targetSdkVersion 30 //Android 11
+        versionCode 300
+        versionName "3.00"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    //Below compileOptions are required to build as we have Java 8 bytecode in our libraries:
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+
+    //This allows unsigned -debug.apk to be sideloaded normally
+    adbOptions {
+
+        //-t allow test packages
+        installOptions '-t'
+    }
+
+
+    //REQUIRED BY THE IWA SDK:
+    dataBinding {
+        enabled = true
+    }
+}
+
+dependencies {
+
+    //REQUIRED BY THE IWA SDK:
+    //---------------------------------------------------------------------------------
+    implementation (group: 'com.iwsinc.iwa', name: 'android_iwa_sdk', version: '9.1.1')
+
+
+    //------------------------------------------------------------------------------------
+    //Unique to this sample app / not required for SDK:
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
+    implementation 'com.google.android.material:material:1.4.0'
+}
