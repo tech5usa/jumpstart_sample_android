@@ -73,19 +73,7 @@ B)  Entered some information incorrectly
 
 
 
-
-
-
-
-
-
-
 # LINKS:
-This information is available in further details on Confluence here:  https://imageware.atlassian.net/wiki/spaces/MA/pages/755204122/How+To+Integrate+Sample+App+Details
-
-Please also see the quick-reference integration.txt file located here, which goes over how to add the SDK to your project:  https://imageware.atlassian.net/wiki/spaces/MA/pages/704938246
-
-The sample app Github repository is located here:  https://github.com/ImageWare/jumpstart_sample_android
 
 Info about Kotlin, the current Android standard programming language which this sample app is written in:  https://developer.android.com/kotlin
 
