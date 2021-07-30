@@ -4,6 +4,8 @@ IWA SDK Sample Application
 Once you clone this repo or download the ZIP file:
 please do a find-in-files for `PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION` in the source code and replace with configuration provided to you separately by your ImageWare contact (MainActivity.kt, lines 30-35)
 
+Don't forget your AWS access ID and token, put these in the root project `build.gradle`, line 27-28)
+
 The sample app was built on Android Studio v `4.2.1` - which was the current release at the time.
 
 
