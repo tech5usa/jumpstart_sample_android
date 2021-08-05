@@ -12,8 +12,8 @@ android {
         applicationId "com.iwsinc.gmi.iwasdksampleapp"
         minSdkVersion 22
         targetSdkVersion 30 //Android 11
-        versionCode 300
-        versionName "3.00"
+        versionCode 301
+        versionName "3.01"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -48,7 +48,7 @@ dependencies {
 
     //REQUIRED BY THE IWA SDK:
     //---------------------------------------------------------------------------------
-    implementation (group: 'com.iwsinc.iwa', name: 'android_iwa_sdk', version: '9.1.1')
+    implementation (group: 'com.iwsinc.iwa', name: 'android_iwa_sdk', version: '9.1.3')
 
 
     //------------------------------------------------------------------------------------

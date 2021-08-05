@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.01:
+    Updated IWA SDK to 9.1.3
+
 ## 3.00:
     https://imageware.atlassian.net/browse/MOBK-551 - Updated sample app to new simplified / unified SDK interface
     Updated: Gradle Build System, Android Gradle Plugin, Kotlin, KotlinX Coroutines, Android Build Tools, AndroidX (Material, Lifecycle)
