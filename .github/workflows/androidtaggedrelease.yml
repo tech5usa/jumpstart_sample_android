@@ -48,8 +48,8 @@ jobs:
     - name: Insert AWS credentials to enable build
       id: insertAwsCreds
       run: |
-        sed 's/accessKey = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"/accessKey = "${{ secrets.AWS_S3_ACCESS_KEY_ID }}"/g' build.gradle
-        sed 's/secretKey = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"/secretKey = "${{ secrets.AWS_S3_ACCESS_KEY }}"/g' build.gradle
+        sed -i 's/accessKey = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"/accessKey = "${{ secrets.AWS_S3_ACCESS_KEY_ID }}"/g' build.gradle
+        sed -i 's/secretKey = "PLEASE_LOOK_FOR_CREDENTIALS_AND_CONFIGURATION"/secretKey = "${{ secrets.AWS_S3_ACCESS_KEY }}"/g' build.gradle
 
     - name: Build with Gradle
       id: build
